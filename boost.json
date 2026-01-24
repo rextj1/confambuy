@@ -1,0 +1,10 @@
+{
+    "agents": [
+        "opencode"
+    ],
+    "editors": [
+        "opencode",
+        "vscode"
+    ],
+    "guidelines": []
+}
