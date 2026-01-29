@@ -13,9 +13,9 @@ return new class extends Migration
             $table->foreignId('order_id')->nullable()->constrained()->nullOnDelete();
             $table->string('session_token')->nullable()->index();
             $table->foreignId('product_sku_id')->constrained('product_skus')->cascadeOnDelete();
-            $table->integer('quantity')->default(0);
-            $table->string('status')->default('reserved'); // reserved/released/consumed/expired
-            $table->timestamp('expires_at')->nullable();
+            $table->integer('quantity')->default(1); // Usually at least 1
+            $table->string('status')->default('reserved')->index(); // reserved/released/consumed/expired
+            $table->timestamp('expires_at')->nullable()->index();
             $table->json('metadata')->nullable();
             $table->timestamps();
         });

@@ -11,14 +11,20 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained()->cascadeOnDelete();
-            $table->string('gateway');
-            $table->string('gateway_id')->nullable();
+            $table->string('gateway'); // stripe, paypal, razorpay
+            $table->string('gateway_id')->nullable()->index(); // The transaction ID from the provider
+            $table->string('payment_method')->nullable(); // card, bank_transfer, wallet
             $table->decimal('amount', 12, 2)->default(0);
-            $table->string('currency', 8)->default('USD');
-            $table->string('status')->default('pending');
+            $table->decimal('fee', 12, 2)->default(0); // Optional: track gateway fees
+            $table->string('currency', 2)->default('NGN, USD'); // ISO 4217 standard is 3 chars
+            $table->string('status')->default('pending')->index();
             $table->json('payload')->nullable();
+            $table->decimal('refunded_amount', 12, 2)->default(0);-
+            $table->json('method_details')->nullable();
+            $table->boolean('captured')->default(false);
             $table->timestamps();
         });
+        
     }
 
     public function down(): void

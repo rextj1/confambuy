@@ -10,12 +10,18 @@ return new class extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('product_id')->constrained()->cascadeOnDelete()->index();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
-            $table->tinyInteger('rating')->unsigned()->default(5);
-            $table->text('title')->nullable();
+            $table->foreignId('order_id')->nullable()->constrained()->nullOnDelete(); // For "Verified Purchase" badge
+            $table->tinyInteger('rating')->unsigned()->default(5); // 1 to 5
+            $table->string('title')->nullable(); // string is usually enough for a title
             $table->text('body')->nullable();
-            $table->boolean('approved')->default(false);
+            $table->json('images')->nullable(); // Support for customer-uploaded photos
+            $table->boolean('is_approved')->default(false)->index();
+            $table->integer('helpful_count')->default(0);
+            $table->string('ip_address')->nullable();
+           $table->timestamp('approved_at')->nullable();
+            $table->boolean('is_featured')->default(false); // Highlight the best reviews at the top
             $table->timestamps();
         });
     }

@@ -10,23 +10,21 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->index();
             $table->string('slug')->unique();
-            $table->foreignId('parent_id')->nullable()->constrained('categories')->nullOnDelete();
-            $table->json('metadata')->nullable();
+            $table->text('description')->nullable();
+            $table->foreignId('parent_id')->nullable()->constrained('categories')->cascadeOnDelete();
+            $table->string('image')->nullable();
+            $table->boolean('is_active')->default(true)->index();
+            $table->integer('sort_order')->default(0);
             $table->timestamps();
-        });
-
-        Schema::create('category_product', function (Blueprint $table) {
-            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-            $table->primary(['category_id', 'product_id']);
+            $table->index('parent_id');
+            $table->index('is_active');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('category_product');
         Schema::dropIfExists('categories');
     }
 };

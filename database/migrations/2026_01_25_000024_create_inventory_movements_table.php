@@ -19,6 +19,8 @@ return new class extends Migration
             $table->foreignId('performed_by')->nullable()->constrained('users')->nullOnDelete();
             $table->json('metadata')->nullable();
             $table->timestamps();
+            $table->index(['reference_type', 'reference_id']); // Vital for finding order-related stock moves
+            $table->index('type');
         });
     }
 

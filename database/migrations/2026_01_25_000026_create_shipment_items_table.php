@@ -14,8 +14,9 @@ return new class extends Migration
             $table->foreignId('order_item_id')->constrained()->cascadeOnDelete();
             $table->foreignId('product_sku_id')->nullable()->constrained('product_skus')->nullOnDelete();
             $table->integer('quantity')->default(1);
-            $table->string('parcel_number')->nullable();
+            $table->string('parcel_number')->nullable()->index(); // Indexed for quick box lookups;
             $table->timestamps();
+            $table->index(['shipment_id', 'order_item_id']);
         });
     }
 

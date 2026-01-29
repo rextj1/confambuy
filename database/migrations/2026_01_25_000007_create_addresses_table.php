@@ -12,13 +12,16 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->string('name')->nullable();
-            $table->string('company')->nullable();
-            $table->string('street');
+            $table->string('email')->nullable(); // Good for guest checkouts
+            // $table->string('company')->nullable();
+            // $table->string('street');
+            $table->string('line_1');
+            $table->string('line_2')->nullable();
             $table->string('city');
             $table->string('state')->nullable();
             $table->string('postal_code')->nullable();
             $table->string('country')->nullable();
-            $table->string('phone')->nullable();
+            $table->string('phone');
             $table->boolean('default_shipping')->default(false);
             $table->boolean('default_billing')->default(false);
             $table->timestamps();

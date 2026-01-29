@@ -14,8 +14,11 @@ return new class extends Migration
             $table->foreignId('product_sku_id')->nullable()->constrained('product_skus')->nullOnDelete();
             $table->string('path');
             $table->string('alt')->nullable();
-            $table->integer('position')->default(0);
+            $table->integer('position')->default(0)->index();
+            $table->boolean('is_featured')->default(false); // Quick way to find the "Main" image
             $table->timestamps();
+            $table->index('product_id');
+            $table->index('product_sku_id');
         });
     }
 
