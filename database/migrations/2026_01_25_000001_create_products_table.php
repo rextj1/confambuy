@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->decimal('price', 12, 2)->default(0);
             $table->decimal('compare_at_price', 12, 2)->nullable();
-            $table->boolean('active')->default(true)->index();
+            $table->boolean('active')->default(true);
             $table->boolean('featured')->default(false)->index(); // Added: For home page highlights
             $table->boolean('taxable')->default(true); // Added: For Naira VAT logic
             $table->timestamp('published_at')->nullable(); // Added: For scheduling launches

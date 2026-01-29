@@ -15,7 +15,6 @@ return new class extends Migration
             $table->integer('reserved')->default(0);
             $table->string('location')->nullable();
             $table->timestamps();
-            $table->index('product_sku_id');
             $table->integer('low_stock_threshold')->default(5); // Trigger for "Running Low" notifications
             $table->boolean('allow_backorder')->default(false); // Can customers buy if stock is 0?
             $table->string('stock_status')->default('in_stock')->index();

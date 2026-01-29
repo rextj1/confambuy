@@ -16,15 +16,14 @@ return new class extends Migration
             $table->string('payment_method')->nullable(); // card, bank_transfer, wallet
             $table->decimal('amount', 12, 2)->default(0);
             $table->decimal('fee', 12, 2)->default(0); // Optional: track gateway fees
-            $table->string('currency', 2)->default('NGN, USD'); // ISO 4217 standard is 3 chars
+            $table->string('currency', 3)->default('NGN'); // ISO 4217 standard is 3 chars
             $table->string('status')->default('pending')->index();
             $table->json('payload')->nullable();
-            $table->decimal('refunded_amount', 12, 2)->default(0);-
+            $table->decimal('refunded_amount', 12, 2)->default(0);
             $table->json('method_details')->nullable();
             $table->boolean('captured')->default(false);
             $table->timestamps();
         });
-        
     }
 
     public function down(): void
