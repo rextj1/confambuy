@@ -15,4 +15,9 @@ class ProductImage extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function sku()
+    {
+        return $this->belongsTo(ProductSku::class, 'product_sku_id');
+    }
 }

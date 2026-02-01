@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProductSku extends Model
 {
@@ -12,7 +13,20 @@ class ProductSku extends Model
 
     protected $table = 'product_skus';
 
-    protected $fillable = ['product_id', 'sku', 'title', 'price', 'weight', 'attributes', 'active'];
+    protected $fillable = [
+        'product_id',
+        'sku',
+        'title',
+        'price',
+        'weight',
+        'attributes',
+        'active',
+        'length',
+        'width',
+        'height',
+        'cost',
+        'manage_stock'
+    ];
 
     protected $casts = [
         'price' => 'decimal:2',
@@ -34,5 +48,13 @@ class ProductSku extends Model
     public function inventory()
     {
         return $this->hasOne(Inventory::class);
+    }
+
+    /**
+     * Get images specific to this SKU.
+     */
+    public function images(): HasMany
+    {
+        return $this->hasMany(ProductImage::class)->orderBy('position');
     }
 }

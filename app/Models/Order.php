@@ -4,45 +4,98 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['order_number', 'user_id', 'billing_address_id', 'shipping_address_id', 'subtotal', 'shipping_total', 'tax_total', 'discount_total', 'grand_total', 'currency', 'status', 'metadata'];
-
-    protected $casts = [
-        'subtotal' => 'decimal:2',
-        'shipping_total' => 'decimal:2',
-        'tax_total' => 'decimal:2',
-        'discount_total' => 'decimal:2',
-        'grand_total' => 'decimal:2',
-        'metadata' => 'array',
-        'tax_breakdown' => 'array',
-        'placed_at' => 'datetime',
-        'shipped_at' => 'datetime',
-        'delivered_at' => 'datetime',
-        'cancelled_at' => 'datetime',
+    protected $fillable = [
+        'user_id',
+        'order_number',
+        'status', // pending, processing, completed, cancelled, declined
+        'grand_total',
+        'item_count',
+        'is_paid',
+        'payment_method',
+        'payment_status',
+        'shipping_address_id',
+        'billing_address_id',
+        'notes',
     ];
 
-    public function items()
+    protected $casts = [
+        'grand_total' => 'decimal:2',
+        'is_paid' => 'boolean',
+        'item_count' => 'integer',
+    ];
+
+    /**
+     * Get the user that placed the order.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the items for the order.
+     */
+    public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
     }
 
-    public function payments()
+    /**
+     * Get the shipping address.
+     */
+    public function shippingAddress(): BelongsTo
+    {
+        return $this->belongsTo(Address::class, 'shipping_address_id');
+    }
+
+    /**
+     * Get the billing address.
+     */
+    public function billingAddress(): BelongsTo
+    {
+        return $this->belongsTo(Address::class, 'billing_address_id');
+    }
+
+    /**
+     * Get the payments for the order.
+     */
+    public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
     }
 
-    public function shipments()
+    /**
+     * Get the shipments for the order.
+     */
+    public function shipments(): HasMany
     {
         return $this->hasMany(Shipment::class);
     }
 
-    public function refunds()
+    /**
+     * Boot function to handle model events.
+     */
+    protected static function boot()
     {
-        return $this->hasMany(Refund::class);
+        parent::boot();
+
+        static::creating(function ($order) {
+            if (empty($order->order_number)) {
+                $order->order_number = static::generateOrderNumber();
+            }
+        });
+    }
+
+    public static function generateOrderNumber()
+    {
+        return 'ORD-' . strtoupper(uniqid());
     }
 }

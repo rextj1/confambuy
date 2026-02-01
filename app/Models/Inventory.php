@@ -9,7 +9,14 @@ class Inventory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['product_sku_id', 'quantity', 'reserved', 'location'];
+    protected $fillable = [
+        'product_sku_id',
+        'quantity',
+        'reserved',
+        'location',
+        'low_stock_threshold',
+        'allow_backorder'
+    ];
 
     protected $casts = [
         'quantity' => 'integer',

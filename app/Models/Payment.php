@@ -9,7 +9,18 @@ class Payment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['order_id', 'gateway', 'gateway_id', 'amount', 'currency', 'status', 'payload'];
+    protected $fillable = [
+        'order_id',
+        'gateway',
+        'gateway_id',
+        'amount',
+        'currency',
+        'status',
+        'payload',
+        'method_details',
+        'refunded_amount',
+        'captured'
+    ];
 
     protected $casts = [
         'amount' => 'decimal:2',
