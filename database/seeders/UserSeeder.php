@@ -30,14 +30,15 @@ class UserSeeder extends Seeder
         foreach ($users as $user) {
             Address::create([
                 'user_id' => $user->id,
-                'full_name' => $user->name,
-                'address_line_1' => fake()->streetAddress(),
+                'name' => $user->name,
+                'line_1' => fake()->streetAddress(),
                 'city' => fake()->city(),
                 'state' => fake()->state(),
                 'postal_code' => fake()->postcode(),
                 'country' => fake()->country(),
                 'phone' => fake()->phoneNumber(),
-                'is_default' => true,
+                'default_shipping' => true,
+                'default_billing' => true,
             ]);
         }
     }

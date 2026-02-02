@@ -24,19 +24,22 @@ class ProductSeeder extends Seeder
             for ($i = 0; $i < 5; $i++) {
                 $name = fake()->words(3, true);
                 $price = fake()->randomFloat(2, 10, 500);
+                $isOnSale = fake()->boolean(30);
 
                 $product = Product::create([
-                    'category_id' => $category->id,
                     'name' => ucfirst($name),
                     'slug' => Str::slug($name) . '-' . Str::random(6),
                     'description' => fake()->paragraph(),
-                    'price' => $price,
-                    'sale_price' => fake()->boolean(30) ? $price * 0.8 : null,
+                    'price' => $isOnSale ? $price * 0.8 : $price,
+                    'compare_at_price' => $isOnSale ? $price : null,
                     'sku' => strtoupper(Str::random(8)),
-                    'stock_quantity' => 0, // Will be summed from SKUs
-                    'is_active' => true,
-                    'is_featured' => fake()->boolean(20),
+                    'active' => true,
+                    'featured' => fake()->boolean(20),
                 ]);
+
+                // Attach category via pivot table
+                // Ensure your Product model has: public function categories() { return $this->belongsToMany(Category::class); }
+                $product->categories()->attach($category->id);
 
                 // Create SKUs (Variants)
                 $this->createSkusForProduct($product);
@@ -91,7 +94,5 @@ class ProductSeeder extends Seeder
 
             $totalStock += $qty;
         }
-
-        $product->update(['stock_quantity' => $totalStock]);
     }
 }

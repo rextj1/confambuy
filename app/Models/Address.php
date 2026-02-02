@@ -12,19 +12,22 @@ class Address extends Model
 
     protected $fillable = [
         'user_id',
-        'full_name',
-        'address_line_1',
-        'address_line_2',
+        'name',
+        'email',
+        'line_1',
+        'line_2',
         'city',
         'state',
         'postal_code',
         'country',
         'phone',
-        'is_default',
+        'default_shipping',
+        'default_billing',
     ];
 
     protected $casts = [
-        'is_default' => 'boolean',
+        'default_shipping' => 'boolean',
+        'default_billing' => 'boolean',
     ];
 
     /**
@@ -40,8 +43,8 @@ class Address extends Model
      */
     public function getFullAddressAttribute(): string
     {
-        return "{$this->address_line_1}, " .
-               ($this->address_line_2 ? "{$this->address_line_2}, " : "") .
+        return "{$this->line_1}, " .
+               ($this->line_2 ? "{$this->line_2}, " : "") .
                "{$this->city}, {$this->state} {$this->postal_code}, {$this->country}";
     }
 }

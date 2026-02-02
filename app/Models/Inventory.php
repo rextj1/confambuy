@@ -15,7 +15,8 @@ class Inventory extends Model
         'reserved',
         'location',
         'low_stock_threshold',
-        'allow_backorder'
+        'allow_backorder',
+        'stock_status',
     ];
 
     protected $casts = [
