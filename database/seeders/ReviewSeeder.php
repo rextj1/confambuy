@@ -24,7 +24,7 @@ class ReviewSeeder extends Seeder
                 'rating' => rand(1, 5),
                 'title' => fake()->sentence(),
                 'body' => fake()->paragraph(),
-                'approved' => true,
+                'is_approved' => true,
                 'approved_at' => now(),
             ]);
         }

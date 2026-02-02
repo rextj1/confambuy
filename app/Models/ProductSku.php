@@ -16,6 +16,7 @@ class ProductSku extends Model
     protected $fillable = [
         'product_id',
         'sku',
+        'barcode',
         'title',
         'price',
         'weight',

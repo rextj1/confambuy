@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -13,33 +13,35 @@ class Product extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'category_id',
         'name',
         'slug',
         'description',
         'price',
-        'sale_price',
+        'compare_at_price',
         'sku',
-        'stock_quantity',
-        'image',
-        'is_active',
-        'is_featured',
+        'active',
+        'featured',
+        'taxable',
+        'published_at',
+        'metadata',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
-        'sale_price' => 'decimal:2',
-        'is_active' => 'boolean',
-        'is_featured' => 'boolean',
-        'stock_quantity' => 'integer',
+        'compare_at_price' => 'decimal:2',
+        'active' => 'boolean',
+        'featured' => 'boolean',
+        'taxable' => 'boolean',
+        'published_at' => 'datetime',
+        'metadata' => 'array',
     ];
 
     /**
-     * Get the category that owns the product.
+     * Get the categories that belong to the product.
      */
-    public function category(): BelongsTo
+    public function categories(): BelongsToMany
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsToMany(Category::class, 'category_product');
     }
 
     /**
@@ -79,7 +81,7 @@ class Product extends Model
      */
     public function scopeActive($query)
     {
-        return $query->where('is_active', true);
+        return $query->where('active', true);
     }
 
     /**
@@ -87,7 +89,7 @@ class Product extends Model
      */
     public function scopeFeatured($query)
     {
-        return $query->where('is_featured', true);
+        return $query->where('featured', true);
     }
 
     /**
@@ -95,7 +97,10 @@ class Product extends Model
      */
     public function inStock(): bool
     {
-        return $this->stock_quantity > 0;
+        // Stock is now managed via SKUs and Inventory, checking if any SKU has stock
+        return $this->skus()->whereHas('inventory', function ($q) {
+            $q->where('quantity', '>', 0);
+        })->exists();
     }
 
     /**
@@ -103,6 +108,6 @@ class Product extends Model
      */
     public function getSellingPriceAttribute()
     {
-        return $this->sale_price ?? $this->price;
+        return $this->price;
     }
 }

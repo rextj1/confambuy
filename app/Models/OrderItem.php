@@ -12,17 +12,27 @@ class OrderItem extends Model
 
     protected $fillable = [
         'order_id',
+        'sku',
         'product_id',
         'product_sku_id',
+        'name',
         'quantity',
         'unit_price',
-        'total_price',
+        'unit_cost',
+        'total',
+        'tax_amount',
+        'metadata',
+        'sku_snapshot',
     ];
 
     protected $casts = [
         'unit_price' => 'decimal:2',
-        'total_price' => 'decimal:2',
+        'unit_cost' => 'decimal:2',
+        'total' => 'decimal:2',
+        'tax_amount' => 'decimal:2',
         'quantity' => 'integer',
+        'metadata' => 'array',
+        'sku_snapshot' => 'array',
     ];
 
     /**

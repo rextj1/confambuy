@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('sort_order')->default(0);
             $table->timestamps();
             $table->index('parent_id');
+            $table->softDeletes();
         });
     }
 
