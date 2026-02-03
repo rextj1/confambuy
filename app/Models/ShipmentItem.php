@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ShipmentItem extends Model
 {
@@ -19,5 +20,10 @@ class ShipmentItem extends Model
     public function orderItem()
     {
         return $this->belongsTo(OrderItem::class);
+    }
+
+    public function sku(): BelongsTo
+    {
+        return $this->belongsTo(ProductSku::class, 'product_sku_id');
     }
 }

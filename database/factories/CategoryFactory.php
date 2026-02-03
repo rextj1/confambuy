@@ -5,27 +5,19 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Category>
- */
 class CategoryFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
-        $name = $this->faker->unique()->word();
-
+        $name = fake()->unique()->department(); // or fake()->word()
+        
         return [
-            'name' => ucfirst($name),
+            'name' => $name,
             'slug' => Str::slug($name),
-            'description' => $this->faker->sentence(),
-            'image' => $this->faker->imageUrl(640, 480, 'category', true),
-            'parent_id' => null,
+            'description' => fake()->sentence(),
             'is_active' => true,
+            'sort_order' => fake()->numberBetween(0, 100),
+            'parent_id' => null, // Can be overridden in seeder
         ];
     }
 }

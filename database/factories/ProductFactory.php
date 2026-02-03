@@ -2,64 +2,27 @@
 
 namespace Database\Factories;
 
-use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Product>
- */
 class ProductFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
-        $name = $this->faker->unique()->words(3, true);
-        $price = $this->faker->randomFloat(2, 10, 1000);
-
+        $name = fake()->unique()->productName(); // Requires a provider or use fake()->words(3, true)
+        
         return [
-            'category_id' => Category::factory(),
-            'name' => ucfirst($name),
+            'name' => $name,
             'slug' => Str::slug($name),
-            'description' => $this->faker->paragraph(),
-            'price' => $price,
-            'sale_price' => null,
-            'sku' => strtoupper($this->faker->unique()->bothify('SKU-####-????')),
-            'stock_quantity' => $this->faker->numberBetween(0, 100),
-            'image' => $this->faker->imageUrl(640, 480, 'product', true),
-            'is_active' => true,
-            'is_featured' => false,
+            'sku' => fake()->unique()->bothify('PROD-####-????'),
+            'description' => fake()->paragraph(),
+            'price' => fake()->randomFloat(2, 1000, 100000),
+            'compare_at_price' => fake()->optional()->randomFloat(2, 100000, 150000),
+            'active' => fake()->boolean(90),
+            'featured' => fake()->boolean(10),
+            'taxable' => true,
+            'published_at' => now(),
+            'metadata' => ['brand' => fake()->company(), 'material' => fake()->word()],
         ];
-    }
-
-    /**
-     * Indicate that the product is inactive.
-     */
-    public function inactive(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'is_active' => false,
-        ]);
-    }
-
-    /**
-     * Indicate that the product is featured.
-     */
-    public function featured(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'is_featured' => true,
-        ]);
-    }
-
-    public function onSale(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'sale_price' => $attributes['price'] * 0.8,
-        ]);
     }
 }

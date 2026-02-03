@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -57,5 +58,13 @@ class ProductSku extends Model
     public function images(): HasMany
     {
         return $this->hasMany(ProductImage::class)->orderBy('position');
+    }
+
+    /**
+     * Get the attribute values associated with this SKU.
+     */
+    public function attributeValues(): BelongsToMany
+    {
+        return $this->belongsToMany(AttributeValue::class, 'attribute_value_product_sku');
     }
 }
