@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProductSku extends Model
 {
@@ -27,7 +29,7 @@ class ProductSku extends Model
         'width',
         'height',
         'cost',
-        'manage_stock'
+        'manage_stock',
     ];
 
     protected $casts = [
@@ -42,12 +44,12 @@ class ProductSku extends Model
         'manage_stock' => 'boolean',
     ];
 
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function inventory()
+    public function inventory(): HasOne
     {
         return $this->hasOne(Inventory::class);
     }

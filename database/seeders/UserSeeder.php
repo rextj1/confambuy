@@ -28,15 +28,9 @@ class UserSeeder extends Seeder
 
         // Create Addresses for Customers
         foreach ($users as $user) {
-            Address::create([
+            Address::factory()->create([
                 'user_id' => $user->id,
                 'name' => $user->name,
-                'line_1' => fake()->streetAddress(),
-                'city' => fake()->city(),
-                'state' => fake()->state(),
-                'postal_code' => fake()->postcode(),
-                'country' => fake()->country(),
-                'phone' => fake()->phoneNumber(),
                 'default_shipping' => true,
                 'default_billing' => true,
             ]);

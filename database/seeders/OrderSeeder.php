@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Address;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Payment;
@@ -18,7 +19,9 @@ class OrderSeeder extends Seeder
         $users = User::where('email', '!=', 'admin@confambuy.com')->get();
         $products = Product::with('skus')->get();
 
-        if ($products->isEmpty()) return;
+        if ($products->isEmpty()) {
+            return;
+        }
 
         foreach ($users as $user) {
             // Create 1-3 orders per user
@@ -34,7 +37,23 @@ class OrderSeeder extends Seeder
                     'country' => fake()->country(),
                     'phone' => fake()->phoneNumber(),
                 ];
-                
+
+                if (! $address) {
+                    $address = Address::factory()->create([
+                        'user_id' => $user->id,
+                        'name' => $user->name,
+                        'line_1' => $addressData['line_1'],
+                        'line_2' => $addressData['line_2'] ?? null,
+                        'city' => $addressData['city'],
+                        'state' => $addressData['state'],
+                        'postal_code' => $addressData['postal_code'],
+                        'country' => $addressData['country'],
+                        'phone' => $addressData['phone'],
+                        'default_shipping' => true,
+                        'default_billing' => true,
+                    ]);
+                }
+
                 $order = Order::create([
                     'user_id' => $user->id,
                     'status' => fake()->randomElement(['pending', 'processing', 'completed', 'cancelled']),
@@ -91,7 +110,7 @@ class OrderSeeder extends Seeder
                     Shipment::create([
                         'order_id' => $order->id,
                         'carrier' => 'FedEx',
-                        'tracking_number' => 'TRK-' . strtoupper(Str::random(10)),
+                        'tracking_number' => 'TRK-'.strtoupper(Str::random(10)),
                         'status' => 'delivered',
                         'cost' => 15.00,
                     ]);

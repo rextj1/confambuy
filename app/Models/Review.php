@@ -22,7 +22,7 @@ class Review extends Model
         'helpful_count',
         'ip_address',
         'approved_at',
-        'is_featured'
+        'is_featured',
     ];
 
     protected $casts = [
@@ -33,12 +33,12 @@ class Review extends Model
         'approved_at' => 'datetime',
     ];
 
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

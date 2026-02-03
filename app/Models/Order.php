@@ -42,7 +42,12 @@ class Order extends Model
     ];
 
     protected $casts = [
+        'subtotal' => 'decimal:2',
+        'shipping_total' => 'decimal:2',
+        'tax_total' => 'decimal:2',
+        'discount_total' => 'decimal:2',
         'grand_total' => 'decimal:2',
+        'refunded_total' => 'decimal:2',
         'tax_breakdown' => 'array',
         'metadata' => 'array',
         'shipping_address_snapshot' => 'array',
@@ -104,19 +109,19 @@ class Order extends Model
     /**
      * Boot function to handle model events.
      */
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
-        static::creating(function ($order) {
+        static::creating(function (self $order): void {
             if (empty($order->order_number)) {
                 $order->order_number = static::generateOrderNumber();
             }
         });
     }
 
-    public static function generateOrderNumber()
+    public static function generateOrderNumber(): string
     {
-        return 'ORD-' . strtoupper(uniqid());
+        return 'ORD-'.strtoupper(uniqid());
     }
 }

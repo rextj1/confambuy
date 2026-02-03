@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -12,28 +13,22 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-});
-
-
 // Public routes
 Route::post('/login', [LoginController::class, 'login']);
-Route::post('/logout', [LoginController::class, 'logout']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 
-Route::get('/me', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+    Route::get('/me', function (Request $request) {
+        return $request->user();
+    });
 
+    Route::post('/logout', [LoginController::class, 'logout']);
+});
 
-// // Protected routes (Only logged-in users can access)
-// Route::middleware('auth:sanctum')->group(function () {
-    
-//     // Get the current user
-//     Route::get('/user', function (Request $request) {
-//         return $request->user();
-//     });
+Route::apiResource('products', ProductController::class)->names('api.products');
 
-//     // Logout
-//     Route::post('/logout', [LoginController::class, 'logout']);
-    
+Route::prefix('v1')->name('api.v1.')->group(function () {
+    Route::apiResource('products', ProductController::class)->names('products');
+});

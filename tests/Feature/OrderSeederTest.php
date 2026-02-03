@@ -18,17 +18,18 @@ class OrderSeederTest extends TestCase
     {
         // Arrange: Create prerequisites (User with Address, Product)
         $user = User::factory()->create();
-        
+
         Address::create([
             'user_id' => $user->id,
-            'full_name' => $user->name,
-            'address_line_1' => '123 Test St',
+            'name' => $user->name,
+            'line_1' => '123 Test St',
             'city' => 'Test City',
             'state' => 'Test State',
             'postal_code' => '12345',
             'country' => 'Test Country',
             'phone' => '1234567890',
-            'is_default' => true,
+            'default_shipping' => true,
+            'default_billing' => true,
         ]);
 
         Product::factory()->count(3)->create();
@@ -46,12 +47,21 @@ class OrderSeederTest extends TestCase
 
             // Verify Order Items
             $this->assertNotEmpty($order->items, "Order {$order->id} has no items.");
-            $this->assertEquals($order->grand_total, $order->items->sum('total_price'), "Order {$order->id} total mismatch.");
+            $this->assertEqualsWithDelta(
+                (float) $order->grand_total,
+                (float) $order->items->sum('total'),
+                0.01,
+                "Order {$order->id} total mismatch."
+            );
 
             // Verify Payments for paid orders
-            if ($order->is_paid) {
+            if ($order->payment_status === 'paid') {
                 $this->assertNotEmpty($order->payments, "Paid order {$order->id} has no payment record.");
-                $this->assertEquals($order->grand_total, $order->payments->first()->amount);
+                $this->assertEqualsWithDelta(
+                    (float) $order->grand_total,
+                    (float) $order->payments->first()->amount,
+                    0.01
+                );
             }
 
             // Verify Shipments for completed orders
