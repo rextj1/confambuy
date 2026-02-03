@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProductImage extends Model
@@ -12,12 +13,12 @@ class ProductImage extends Model
 
     protected $fillable = ['product_id', 'product_sku_id', 'path', 'alt', 'position', 'is_featured'];
 
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function sku()
+    public function sku(): BelongsTo
     {
         return $this->belongsTo(ProductSku::class, 'product_sku_id');
     }

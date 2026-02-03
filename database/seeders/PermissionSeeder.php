@@ -2,42 +2,115 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 class PermissionSeeder extends Seeder
 {
     public function run(): void
     {
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+
+        $guard = config('permission.defaults.guard', 'web');
+
         // Core roles
-        $roles = ['super-admin', 'admin', 'inventory', 'orders', 'support', 'marketing'];
+        $roles = ['admin', 'staff', 'customer'];
 
         foreach ($roles as $role) {
-            Role::firstOrCreate(['name' => $role, 'guard_name' => 'web']);
+            Role::firstOrCreate(['name' => $role, 'guard_name' => $guard]);
         }
 
-        // Example permissions
+        // Core permissions (scoped by domain)
         $perms = [
             'products.create', 'products.view', 'products.update', 'products.delete',
-            'orders.manage', 'orders.view', 'shipments.manage',
+            'categories.manage',
+            'orders.create', 'orders.view', 'orders.update', 'orders.cancel',
+            'shipments.manage',
             'inventory.manage',
             'coupons.manage',
+            'users.view', 'users.manage',
+            'settings.manage',
+            'reviews.moderate',
+            'reports.view',
         ];
 
         foreach ($perms as $perm) {
-            Permission::firstOrCreate(['name' => $perm, 'guard_name' => 'web']);
+            Permission::firstOrCreate(['name' => $perm, 'guard_name' => $guard]);
         }
 
         // Attach some defaults
-        $admin = Role::where('name', 'admin')->first();
+        $admin = Role::where('name', 'admin')->where('guard_name', $guard)->first();
         if ($admin) {
-            $admin->givePermissionTo(Permission::all());
+            $admin->syncPermissions(Permission::where('guard_name', $guard)->get());
         }
 
-        $super = Role::where('name', 'super-admin')->first();
-        if ($super) {
-            $super->givePermissionTo(Permission::all());
+        $staff = Role::where('name', 'staff')->where('guard_name', $guard)->first();
+        if ($staff) {
+            $staff->syncPermissions([
+                'products.view',
+                'products.create',
+                'products.update',
+                'orders.view',
+                'orders.update',
+                'shipments.manage',
+                'inventory.manage',
+                'coupons.manage',
+                'reviews.moderate',
+                'reports.view',
+            ]);
+        }
+
+        $customer = Role::where('name', 'customer')->where('guard_name', $guard)->first();
+        if ($customer) {
+            $customer->syncPermissions([
+                'products.view',
+                'orders.create',
+                'orders.view',
+                'orders.cancel',
+            ]);
+        }
+
+        $defaultPassword = Hash::make('password');
+
+        $adminUser = User::updateOrCreate(
+            ['email' => 'admin@confambuy.com'],
+            [
+                'name' => 'Admin User',
+                'password' => $defaultPassword,
+                'email_verified_at' => now(),
+                'is_active' => true,
+            ]
+        );
+
+        $staffUser = User::updateOrCreate(
+            ['email' => 'tojurex@gmail.com'],
+            [
+                'name' => 'Rex',
+                'password' => $defaultPassword,
+                'email_verified_at' => now(),
+                'is_active' => true,
+            ]
+        );
+
+        if ($adminUser && $admin) {
+            $adminUser->syncRoles([$admin->name]);
+        }
+
+        if ($staffUser && $staff) {
+            $staffUser->syncRoles([$staff->name]);
+        }
+
+        if ($customer) {
+            User::whereDoesntHave('roles')
+                ->whereNotIn('email', ['admin@confambuy.com', 'tojurex@gmail.com'])
+                ->get()
+                ->each(function (User $user) use ($customer): void {
+                    $user->assignRole($customer->name);
+                });
         }
     }
 }

@@ -26,15 +26,18 @@ class Coupon extends Model
         'constraints',
         'name',
         'description',
-        'is_automatic'
+        'is_automatic',
     ];
 
     protected $casts = [
         'value' => 'decimal:2',
+        'min_spend' => 'decimal:2',
+        'max_discount' => 'decimal:2',
         'starts_at' => 'datetime',
         'expires_at' => 'datetime',
         'constraints' => 'array',
-        'minimum_order_amount' => 'decimal:2',
+        'is_active' => 'boolean',
+        'is_automatic' => 'boolean',
     ];
 
     /**

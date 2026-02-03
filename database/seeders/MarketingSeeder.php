@@ -11,7 +11,7 @@ class MarketingSeeder extends Seeder
     public function run(): void
     {
         // Coupons
-        Coupon::create([
+        Coupon::factory()->create([
             'code' => 'WELCOME10',
             'type' => 'percentage',
             'value' => 10,
@@ -20,7 +20,7 @@ class MarketingSeeder extends Seeder
             'expires_at' => now()->addYear(),
         ]);
 
-        Coupon::create([
+        Coupon::factory()->create([
             'code' => 'SAVE50',
             'type' => 'fixed_amount',
             'value' => 50,
@@ -30,7 +30,7 @@ class MarketingSeeder extends Seeder
         ]);
 
         // Promotions
-        Promotion::create([
+        Promotion::factory()->create([
             'name' => 'Summer Sale',
             'slug' => 'summer-sale',
             'type' => 'percentage',

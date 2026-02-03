@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class RefundItem extends Model
 {
@@ -16,12 +17,12 @@ class RefundItem extends Model
         'unit_amount' => 'decimal:2',
     ];
 
-    public function refund()
+    public function refund(): BelongsTo
     {
         return $this->belongsTo(Refund::class);
     }
 
-    public function orderItem()
+    public function orderItem(): BelongsTo
     {
         return $this->belongsTo(OrderItem::class);
     }

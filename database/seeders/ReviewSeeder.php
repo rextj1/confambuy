@@ -14,19 +14,16 @@ class ReviewSeeder extends Seeder
         $users = User::all();
         $products = Product::all();
 
-        if ($users->isEmpty() || $products->isEmpty()) return;
+        if ($users->isEmpty() || $products->isEmpty()) {
+            return;
+        }
 
-        // Create 50 random reviews
-        for ($i = 0; $i < 50; $i++) {
-            Review::create([
+        Review::factory()
+            ->count(50)
+            ->state(fn () => [
                 'user_id' => $users->random()->id,
                 'product_id' => $products->random()->id,
-                'rating' => rand(1, 5),
-                'title' => fake()->sentence(),
-                'body' => fake()->paragraph(),
-                'is_approved' => true,
-                'approved_at' => now(),
-            ]);
-        }
+            ])
+            ->create();
     }
 }

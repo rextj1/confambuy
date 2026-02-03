@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class InventoryReservation extends Model
 {
@@ -17,12 +18,12 @@ class InventoryReservation extends Model
         'metadata' => 'array',
     ];
 
-    public function sku()
+    public function sku(): BelongsTo
     {
         return $this->belongsTo(ProductSku::class, 'product_sku_id');
     }
 
-    public function order()
+    public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
     }

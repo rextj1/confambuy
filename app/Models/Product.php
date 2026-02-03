@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -87,7 +88,7 @@ class Product extends Model
     /**
      * Scope a query to only include active products.
      */
-    public function scopeActive($query)
+    public function scopeActive(Builder $query): Builder
     {
         return $query->where('active', true);
     }
@@ -95,7 +96,7 @@ class Product extends Model
     /**
      * Scope a query to only include featured products.
      */
-    public function scopeFeatured($query)
+    public function scopeFeatured(Builder $query): Builder
     {
         return $query->where('featured', true);
     }
@@ -114,7 +115,7 @@ class Product extends Model
     /**
      * Get the current selling price (sale price if set, otherwise regular price).
      */
-    public function getSellingPriceAttribute()
+    public function getSellingPriceAttribute(): string
     {
         return $this->price;
     }

@@ -9,10 +9,10 @@ class CategoryFactory extends Factory
 {
     public function definition(): array
     {
-        $name = fake()->unique()->department(); // or fake()->word()
-        
+        $name = fake()->unique()->words(2, true);
+
         return [
-            'name' => $name,
+            'name' => ucfirst($name),
             'slug' => Str::slug($name),
             'description' => fake()->sentence(),
             'is_active' => true,

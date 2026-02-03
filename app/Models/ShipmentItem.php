@@ -12,12 +12,12 @@ class ShipmentItem extends Model
 
     protected $fillable = ['shipment_id', 'order_item_id', 'product_sku_id', 'quantity', 'parcel_number'];
 
-    public function shipment()
+    public function shipment(): BelongsTo
     {
         return $this->belongsTo(Shipment::class);
     }
 
-    public function orderItem()
+    public function orderItem(): BelongsTo
     {
         return $this->belongsTo(OrderItem::class);
     }
