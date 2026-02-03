@@ -45,6 +45,14 @@ class Product extends Model
     }
 
     /**
+     * Get the coupons applicable to the product.
+     */
+    public function coupons(): BelongsToMany
+    {
+        return $this->belongsToMany(Coupon::class, 'coupon_product');
+    }
+
+    /**
      * Get the order items for the product.
      */
     public function orderItems(): HasMany

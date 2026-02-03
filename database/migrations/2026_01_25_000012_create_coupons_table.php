@@ -22,12 +22,12 @@ return new class extends Migration
             $table->dateTime('starts_at')->nullable();
             $table->dateTime('expires_at')->nullable();
             $table->json('constraints')->nullable(); // For complex logic (e.g., specific categories only)
-            $table->softDeletes();
             $table->timestamps();
             // FOR PROMOTIONS WITHOUT CODES
             $table->string('name')->nullable(); // e.g., "Black Friday Sale"
             $table->text('description')->nullable();
             $table->boolean('is_automatic')->default(false); // If true, apply without a code
+            $table->softDeletes();
         });
 
         Schema::create('coupon_product', function (Blueprint $table) {

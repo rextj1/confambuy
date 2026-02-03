@@ -22,8 +22,8 @@ return new class extends Migration
             $table->timestamp('published_at')->nullable(); // Added: For scheduling launches
             $table->json('metadata')->nullable();
             $table->timestamps();
-            $table->softDeletes();
             $table->index(['active']);
+            $table->softDeletes();      
         });
     }
 

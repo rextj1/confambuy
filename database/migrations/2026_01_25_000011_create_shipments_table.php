@@ -16,12 +16,12 @@ return new class extends Migration
             $table->string('tracking_number')->nullable()->index();
             $table->decimal('cost', 12, 2)->default(0);
             $table->string('status')->default('pending')->index();
-             $table->timestamp('shipped_at')->nullable();
+            $table->timestamp('shipped_at')->nullable();
             $table->timestamp('delivered_at')->nullable();
             $table->string('tracking_url')->nullable();
             $table->json('label')->nullable();
-            $table->softDeletes(); 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
