@@ -15,20 +15,31 @@ Route::get('/', function () {
 
 // Public routes
 Route::post('/login', [LoginController::class, 'login']);
+/*
+|--------------------------------------------------------------------------
+| Public Read-Only Resources (Guest OK)
+|--------------------------------------------------------------------------
+*/
+Route::prefix('v1')->group(function () {
+    Route::apiResource('products', ProductController::class)
+        ->only(['index', 'show']);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Authenticated Routes
+|--------------------------------------------------------------------------
+*/
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
+
+    Route::post('/logout', [LoginController::class, 'logout']);
 
     Route::get('/me', function (Request $request) {
         return $request->user();
     });
 
-    Route::post('/logout', [LoginController::class, 'logout']);
-});
-
-Route::apiResource('products', ProductController::class)->names('api.products');
-
-Route::prefix('v1')->name('api.v1.')->group(function () {
-    Route::apiResource('products', ProductController::class)->names('products');
+    Route::prefix('v1')->group(function () {
+        Route::apiResource('products', ProductController::class)
+            ->only(['store', 'update', 'destroy']);
+    });
 });
