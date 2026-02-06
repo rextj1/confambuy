@@ -3,29 +3,27 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\JsonResponse; // Added this import
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
-    public function login(Request $request): JsonResponse
+    public function login(LoginRequest $request): JsonResponse
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+        $credentials = $request->validated();
 
-        if (!auth()->attempt($credentials)) {
+        if (! auth()->attempt($credentials)) {
             return response()->json([
-                'message' => 'Invalid credentials'
+                'message' => 'Invalid credentials',
             ], 401);
         }
 
-       session()->regenerate();
+        session()->regenerate();
 
         return response()->json([
             'message' => 'Logged in successfully',
-            'user' => auth()->user(), 
+            'user' => auth()->user(),
         ]);
     }
 
@@ -34,7 +32,7 @@ class LoginController extends Controller
         // Explicitly using the web guard for cookie logout
         auth()->guard('web')->logout();
 
-      session()->invalidate();
+        session()->invalidate();
         session()->regenerateToken();
 
         return response()->json(['message' => 'Logged out']);

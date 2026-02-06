@@ -10,6 +10,8 @@ use App\Models\Product;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class ProductController extends Controller
 {
@@ -26,9 +28,34 @@ class ProductController extends Controller
      */
     public function index(): JsonResponse
     {
-        $products = Product::query()
-            ->with('categories')
-            ->paginate();
+        $perPage = (int) request()->integer('per_page', 15);
+        $perPage = max(1, min($perPage, 100));
+
+        $products = QueryBuilder::for(Product::class)
+            ->allowedFilters([
+                'name',
+                'price',
+                AllowedFilter::exact('active'),
+                AllowedFilter::exact('featured'),
+                AllowedFilter::callback('category', function ($query, $value): void {
+                    $query->whereHas('categories', function ($categoryQuery) use ($value): void {
+                        $categoryQuery->where('slug', $value)
+                            ->orWhere('name', $value)
+                            ->orWhere('id', $value);
+                    });
+                }),
+                AllowedFilter::callback('price_min', function ($query, $value): void {
+                    $query->where('price', '>=', $value);
+                }),
+                AllowedFilter::callback('price_max', function ($query, $value): void {
+                    $query->where('price', '<=', $value);
+                }),
+            ])
+            ->allowedSorts(['price', 'name', 'created_at', 'published_at'])
+            ->allowedIncludes(['categories'])
+            ->defaultSort('-created_at')
+            ->with(['categories', 'media', 'skus.media'])
+            ->paginate($perPage);
 
         return ApiResponse::collection(ProductResource::collection($products));
     }
@@ -64,7 +91,7 @@ class ProductController extends Controller
      */
     public function show(Product $product): JsonResponse
     {
-        $product->load('categories');
+        $product->load(['categories', 'media', 'skus.media']);
 
         return ApiResponse::resource(new ProductResource($product));
     }

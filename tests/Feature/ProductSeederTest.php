@@ -29,7 +29,7 @@ class ProductSeederTest extends TestCase
             $this->assertNotEmpty($product->skus, "Product {$product->id} should have SKUs.");
 
             // Verify Images exist (Seeder creates 3 images per product)
-            $this->assertCount(3, $product->images, "Product {$product->id} should have 3 images.");
+            $this->assertCount(3, $product->getMedia('images'), "Product {$product->id} should have 3 images.");
 
             // Verify Inventory exists for each SKU
             foreach ($product->skus as $sku) {

@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Actions\Pricing\BuildSkuSnapshot;
+use App\Actions\Pricing\CalculateOrderTotals;
 use App\Models\Address;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -58,6 +60,11 @@ class OrderSeeder extends Seeder
                     'user_id' => $user->id,
                     'status' => fake()->randomElement(['pending', 'processing', 'completed', 'cancelled']),
                     'grand_total' => 0,
+                    'subtotal' => 0,
+                    'discount_total' => 0,
+                    'tax_total' => 0,
+                    'shipping_total' => 0,
+                    'currency' => (string) config('pricing.currency', 'NGN'),
                     'payment_status' => fake()->boolean(80) ? 'paid' : 'unpaid',
                     'payment_method' => 'credit_card',
                     'shipping_address_id' => $address?->id,
@@ -66,7 +73,7 @@ class OrderSeeder extends Seeder
                     'billing_address_snapshot' => $addressData,
                 ]);
 
-                $grandTotal = 0;
+                $lineItems = collect();
 
                 // Add 1-5 items per order
                 for ($j = 0; $j < rand(1, 5); $j++) {
@@ -80,17 +87,36 @@ class OrderSeeder extends Seeder
                         'order_id' => $order->id,
                         'product_id' => $product->id,
                         'product_sku_id' => $sku?->id,
+                        'sku' => $sku?->sku,
                         'name' => $product->name,
                         'quantity' => $qty,
                         'unit_price' => $price,
+                        'unit_cost' => $sku?->cost,
                         'total' => $total,
+                        'sku_snapshot' => $sku ? app(BuildSkuSnapshot::class)->fromSku($sku) : null,
                     ]);
 
-                    $grandTotal += $total;
+                    if ($sku) {
+                        $lineItems->push(['sku' => $sku, 'quantity' => $qty]);
+                    }
                 }
 
+                $totals = app(CalculateOrderTotals::class)->calculate(
+                    $lineItems,
+                    null,
+                    $address,
+                    'standard',
+                    $user->id
+                );
+
                 $order->update([
-                    'grand_total' => $grandTotal,
+                    'subtotal' => $totals['subtotal'],
+                    'discount_total' => $totals['discount'],
+                    'tax_total' => $totals['tax'],
+                    'shipping_total' => $totals['shipping'],
+                    'grand_total' => $totals['total'],
+                    'tax_breakdown' => $totals['tax_breakdown'],
+                    'shipping_method' => 'standard',
                 ]);
 
                 // Create Payment
@@ -98,8 +124,8 @@ class OrderSeeder extends Seeder
                     Payment::create([
                         'order_id' => $order->id,
                         'gateway' => 'stripe',
-                        'amount' => $grandTotal,
-                        'currency' => 'USD',
+                        'amount' => $order->grand_total,
+                        'currency' => $order->currency,
                         'status' => 'succeeded',
                         'captured' => true,
                     ]);

@@ -5,9 +5,9 @@ namespace Database\Seeders;
 use App\Models\Category;
 use App\Models\Inventory;
 use App\Models\Product;
-use App\Models\ProductImage;
 use App\Models\ProductSku;
 use Illuminate\Database\Seeder;
+use Illuminate\Http\UploadedFile;
 
 class ProductSeeder extends Seeder
 {
@@ -40,18 +40,18 @@ class ProductSeeder extends Seeder
 
                     $this->createSkusForProduct($product);
 
-                    ProductImage::factory()
-                        ->count(3)
-                        ->sequence(
-                            ['position' => 0],
-                            ['position' => 1],
-                            ['position' => 2]
-                        )
-                        ->create([
-                            'product_id' => $product->id,
-                            'path' => 'https://placehold.co/600x400?text='.urlencode($product->name),
-                            'alt' => $product->name,
-                        ]);
+                    collect([0, 1, 2])->each(function (int $position) use ($product): void {
+                        $file = UploadedFile::fake()->image("product-{$product->id}-{$position}.jpg");
+
+                        $product->addMedia($file)
+                            ->usingName($product->name)
+                            ->withCustomProperties([
+                                'alt' => $product->name,
+                                'is_featured' => $position === 0,
+                                'position' => $position,
+                            ])
+                            ->toMediaCollection('images');
+                    });
                 });
         }
     }
