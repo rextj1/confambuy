@@ -13,6 +13,13 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
+/**
+ * @group Payments
+ *
+ * Initialize and verify Paystack payments.
+ *
+ * @authenticated
+ */
 class PaystackController extends Controller
 {
     public function __construct()

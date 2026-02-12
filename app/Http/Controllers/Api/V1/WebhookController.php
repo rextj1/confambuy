@@ -8,6 +8,13 @@ use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @group Webhooks
+ *
+ * Public payment webhook ingestion endpoint.
+ *
+ * @unauthenticated
+ */
 class WebhookController extends Controller
 {
     public function payments(Request $request, PaystackWebhookHandler $handler): JsonResponse

@@ -11,6 +11,13 @@ use App\Models\ProductSku;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @group Pricing
+ *
+ * Calculate cart pricing quotes before checkout.
+ *
+ * @authenticated
+ */
 class PricingController extends Controller
 {
     public function __construct()

@@ -11,6 +11,13 @@ use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @group Addresses
+ *
+ * Manage customer shipping and billing addresses.
+ *
+ * @authenticated
+ */
 class AddressController extends Controller
 {
     public function __construct()

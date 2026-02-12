@@ -8,6 +8,13 @@ use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @group Orders
+ *
+ * Track order progress and delivery states.
+ *
+ * @authenticated
+ */
 class OrderTrackingController extends Controller
 {
     public function track(Request $request, Order $order): JsonResponse

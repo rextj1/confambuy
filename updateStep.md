@@ -34,6 +34,10 @@ Service-Action Pattern: Create "Actions" or "Services" for complex logic (like c
 
 Headless Media Library: Use Spatie Media Library with the S3 driver. The API must return Absolute URLs for images so the frontend can display them regardless of the domain.
 
+Relationship Logic: Define strictly indexed many-to-many relationships (e.g., Category belongsToMany Product and Product belongsToMany Category). Use Eager Loading (with(['categories', 'images'])) in your API Resources to prevent "N+1" performance issues.
+
+API Resources (Transform Layer): Implement Eloquent Resources for both Categories and Products. Never return a raw Model; this ensures your JSON structure remains stable even if you rename database columns.
+
 Stock Management Logic: Build a strict "Inventory Service" that ensures SKU quantity is locked during the checkout process.
 
 Phase 4: Atomic Checkout & Webhooks (The Money)

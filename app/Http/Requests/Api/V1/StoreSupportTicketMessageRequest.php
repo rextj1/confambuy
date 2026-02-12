@@ -29,6 +29,26 @@ class StoreSupportTicketMessageRequest extends FormRequest
         ];
     }
 
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public function bodyParameters(): array
+    {
+        return [
+            'message' => [
+                'description' => 'Message content to append to the ticket thread.',
+                'example' => 'Please see the payment reference attached.',
+            ],
+            'attachments' => [
+                'description' => 'Optional attachment files.',
+            ],
+            'is_internal' => [
+                'description' => 'Set true for internal staff-only notes.',
+                'example' => false,
+            ],
+        ];
+    }
+
     public function messages(): array
     {
         return [

@@ -18,17 +18,19 @@ class AttributeSeeder extends Seeder
         ];
 
         foreach ($attributes as $name => $values) {
-            $attribute = Attribute::create([
-                'name' => $name,
-                'slug' => Str::slug($name),
-                'type' => 'select',
-            ]);
+            $attribute = Attribute::query()->updateOrCreate(
+                ['slug' => Str::slug($name)],
+                [
+                    'name' => $name,
+                    'type' => 'select',
+                ]
+            );
 
             foreach ($values as $value) {
-                $attribute->values()->create([
-                    'value' => $value,
-                    'label' => $value,
-                ]);
+                $attribute->values()->updateOrCreate(
+                    ['value' => $value],
+                    ['label' => $value]
+                );
             }
         }
     }

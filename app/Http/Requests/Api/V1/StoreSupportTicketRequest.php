@@ -30,6 +30,35 @@ class StoreSupportTicketRequest extends FormRequest
         ];
     }
 
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public function bodyParameters(): array
+    {
+        return [
+            'order_id' => [
+                'description' => 'Order ID associated with this ticket (if any).',
+                'example' => 1,
+            ],
+            'category' => [
+                'description' => 'Support issue category.',
+                'example' => 'payment',
+            ],
+            'subject' => [
+                'description' => 'Short summary of the issue.',
+                'example' => 'Payment completed but order still pending',
+            ],
+            'description' => [
+                'description' => 'Detailed explanation of the issue.',
+                'example' => 'I completed payment and got a debit alert, but the order status is still pending.',
+            ],
+            'priority' => [
+                'description' => 'Priority level: low, medium, high, or urgent.',
+                'example' => 'high',
+            ],
+        ];
+    }
+
     public function messages(): array
     {
         return [

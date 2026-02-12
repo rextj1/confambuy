@@ -26,6 +26,19 @@ class UpdateCartItemRequest extends FormRequest
         ];
     }
 
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public function bodyParameters(): array
+    {
+        return [
+            'quantity' => [
+                'description' => 'New quantity for this cart item.',
+                'example' => 3,
+            ],
+        ];
+    }
+
     public function messages(): array
     {
         return [

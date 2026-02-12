@@ -27,6 +27,23 @@ class PaystackInitializeRequest extends FormRequest
         ];
     }
 
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public function bodyParameters(): array
+    {
+        return [
+            'order_id' => [
+                'description' => 'Order ID to initialize payment for.',
+                'example' => 1,
+            ],
+            'callback_url' => [
+                'description' => 'Optional URL to redirect the customer after payment.',
+                'example' => 'https://confambuy.test/checkout/complete',
+            ],
+        ];
+    }
+
     public function messages(): array
     {
         return [

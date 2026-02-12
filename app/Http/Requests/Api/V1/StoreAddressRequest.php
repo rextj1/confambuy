@@ -36,6 +36,59 @@ class StoreAddressRequest extends FormRequest
         ];
     }
 
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public function bodyParameters(): array
+    {
+        return [
+            'name' => [
+                'description' => 'Recipient full name.',
+                'example' => 'John Doe',
+            ],
+            'email' => [
+                'description' => 'Recipient email address.',
+                'example' => 'john@example.com',
+            ],
+            'line_1' => [
+                'description' => 'Primary street address line.',
+                'example' => '12 Admiralty Way',
+            ],
+            'line_2' => [
+                'description' => 'Secondary address details (optional).',
+                'example' => 'Lekki Phase 1',
+            ],
+            'city' => [
+                'description' => 'City.',
+                'example' => 'Lagos',
+            ],
+            'state' => [
+                'description' => 'State or province.',
+                'example' => 'Lagos',
+            ],
+            'postal_code' => [
+                'description' => 'Postal or ZIP code.',
+                'example' => '100001',
+            ],
+            'country' => [
+                'description' => 'Country name or code.',
+                'example' => 'Nigeria',
+            ],
+            'phone' => [
+                'description' => 'Recipient phone number.',
+                'example' => '+2348012345678',
+            ],
+            'default_shipping' => [
+                'description' => 'Mark as the default shipping address.',
+                'example' => true,
+            ],
+            'default_billing' => [
+                'description' => 'Mark as the default billing address.',
+                'example' => false,
+            ],
+        ];
+    }
+
     public function messages(): array
     {
         return [

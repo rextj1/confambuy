@@ -36,6 +36,38 @@ class PricingQuoteRequest extends FormRequest
         ];
     }
 
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public function bodyParameters(): array
+    {
+        return [
+            'items' => [
+                'description' => 'List of line items to price.',
+            ],
+            'items.*.sku_id' => [
+                'description' => 'Product SKU ID.',
+                'example' => 10,
+            ],
+            'items.*.quantity' => [
+                'description' => 'Requested quantity for the SKU.',
+                'example' => 2,
+            ],
+            'coupon_code' => [
+                'description' => 'Coupon code to apply.',
+                'example' => 'WELCOME10',
+            ],
+            'shipping_address_id' => [
+                'description' => 'Shipping address ID to use for shipping/tax estimation.',
+                'example' => 4,
+            ],
+            'shipping_method' => [
+                'description' => 'Selected shipping method.',
+                'example' => 'standard',
+            ],
+        ];
+    }
+
     public function messages(): array
     {
         return [

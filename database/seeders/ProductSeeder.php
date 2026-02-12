@@ -8,38 +8,76 @@ use App\Models\Product;
 use App\Models\ProductSku;
 use Illuminate\Database\Seeder;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Str;
 
 class ProductSeeder extends Seeder
 {
     public function run(): void
     {
+        $productsPerCategory = max(1, (int) config('seeding.product.products_per_category', 6));
+        $generateMedia = (bool) config('seeding.product.generate_media', true);
+        $minSkus = max(1, (int) config('seeding.product.min_skus_per_product', 1));
+        $maxSkus = max($minSkus, (int) config('seeding.product.max_skus_per_product', 3));
+
         $categories = Category::whereNotNull('parent_id')->get();
 
         if ($categories->isEmpty()) {
             $categories = Category::all();
         }
 
+        $categoriesLimit = config('seeding.product.categories_limit');
+
+        if (is_numeric($categoriesLimit) && (int) $categoriesLimit > 0) {
+            $categories = $categories->take((int) $categoriesLimit)->values();
+        }
+
+        if ($this->command) {
+            $this->command->getOutput()->writeln(
+                sprintf(
+                    '  ProductSeeder config: categories=%d, products/category=%d, media=%s, skus=%d-%d',
+                    $categories->count(),
+                    $productsPerCategory,
+                    $generateMedia ? 'on' : 'off',
+                    $minSkus,
+                    $maxSkus
+                )
+            );
+        }
+
         foreach ($categories as $category) {
-            $productsPerCategory = 6;
+            for ($index = 1; $index <= $productsPerCategory; $index++) {
+                $name = "{$category->name} Product {$index}";
+                $slug = Str::slug("{$category->slug}-product-{$index}");
+                $basePrice = fake()->randomFloat(2, 10, 500);
+                $isOnSale = fake()->boolean(30);
+                $skuCode = sprintf('CAT-%d-PROD-%03d', $category->id, $index);
 
-            Product::factory()
-                ->count($productsPerCategory)
-                ->create()
-                ->each(function (Product $product) use ($category): void {
-                    $isOnSale = fake()->boolean(30);
-                    $price = fake()->randomFloat(2, 10, 500);
-
-                    $product->update([
-                        'price' => $isOnSale ? $price * 0.8 : $price,
-                        'compare_at_price' => $isOnSale ? $price : null,
+                $product = Product::query()->updateOrCreate(
+                    ['slug' => $slug],
+                    [
+                        'name' => $name,
+                        'sku' => $skuCode,
+                        'description' => fake()->paragraph(),
+                        'price' => $isOnSale ? round($basePrice * 0.8, 2) : $basePrice,
+                        'compare_at_price' => $isOnSale ? $basePrice : null,
                         'active' => true,
                         'featured' => fake()->boolean(20),
-                    ]);
+                        'taxable' => true,
+                        'published_at' => now(),
+                        'metadata' => [
+                            'brand' => fake()->company(),
+                            'material' => fake()->word(),
+                        ],
+                    ]
+                );
 
-                    $product->categories()->sync([$category->id]);
+                $product->categories()->syncWithoutDetaching([$category->id]);
 
-                    $this->createSkusForProduct($product);
+                if (! $product->skus()->exists()) {
+                    $this->createSkusForProduct($product, $minSkus, $maxSkus);
+                }
 
+                if ($generateMedia && $product->getMedia('images')->isEmpty()) {
                     collect([0, 1, 2])->each(function (int $position) use ($product): void {
                         $file = UploadedFile::fake()->image("product-{$product->id}-{$position}.jpg");
 
@@ -52,14 +90,15 @@ class ProductSeeder extends Seeder
                             ])
                             ->toMediaCollection('images');
                     });
-                });
+                }
+            }
         }
     }
 
-    private function createSkusForProduct(Product $product): void
+    private function createSkusForProduct(Product $product, int $minSkus, int $maxSkus): void
     {
-        // Simplified logic: Create 1-3 variants per product
-        $variantCount = rand(1, 3);
+        // Simplified logic: Create configurable number of variants per product
+        $variantCount = rand($minSkus, $maxSkus);
         $skus = ProductSku::factory()
             ->count($variantCount)
             ->create(['product_id' => $product->id]);

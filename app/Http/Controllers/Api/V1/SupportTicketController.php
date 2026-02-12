@@ -17,6 +17,13 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 
+/**
+ * @group Support Tickets
+ *
+ * Create and manage customer support ticket threads.
+ *
+ * @authenticated
+ */
 class SupportTicketController extends Controller
 {
     public function index(Request $request): JsonResponse

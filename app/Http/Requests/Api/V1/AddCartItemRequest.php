@@ -32,6 +32,23 @@ class AddCartItemRequest extends FormRequest
         ];
     }
 
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public function bodyParameters(): array
+    {
+        return [
+            'sku_id' => [
+                'description' => 'Product SKU ID to add to cart.',
+                'example' => 12,
+            ],
+            'quantity' => [
+                'description' => 'Quantity to add.',
+                'example' => 1,
+            ],
+        ];
+    }
+
     public function messages(): array
     {
         return [

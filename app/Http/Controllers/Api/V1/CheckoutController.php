@@ -19,6 +19,13 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @group Checkout
+ *
+ * Convert an active cart into an order.
+ *
+ * @authenticated
+ */
 class CheckoutController extends Controller
 {
     public function __construct()

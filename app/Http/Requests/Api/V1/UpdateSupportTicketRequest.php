@@ -27,4 +27,25 @@ class UpdateSupportTicketRequest extends FormRequest
             'assigned_to' => ['nullable', 'integer', 'exists:users,id'],
         ];
     }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public function bodyParameters(): array
+    {
+        return [
+            'status' => [
+                'description' => 'New status: open, pending, resolved, or closed.',
+                'example' => 'pending',
+            ],
+            'priority' => [
+                'description' => 'Updated priority: low, medium, high, or urgent.',
+                'example' => 'urgent',
+            ],
+            'assigned_to' => [
+                'description' => 'User ID of support staff assigned to the ticket.',
+                'example' => 2,
+            ],
+        ];
+    }
 }

@@ -30,6 +30,48 @@ class CheckoutRequest extends FormRequest
         ];
     }
 
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public function bodyParameters(): array
+    {
+        return [
+            'shipping_address_id' => [
+                'description' => 'Shipping address ID.',
+                'example' => 4,
+            ],
+            'billing_address_id' => [
+                'description' => 'Billing address ID.',
+                'example' => 5,
+            ],
+            'shipping_method' => [
+                'description' => 'Shipping method code.',
+                'example' => 'standard',
+            ],
+            'payment_method' => [
+                'description' => 'Payment method code.',
+                'example' => 'paystack',
+            ],
+            'idempotency_key' => [
+                'description' => 'Unique key for safe retries. This is read from the Idempotency-Key header.',
+                'example' => 'checkout-user-42-20260212-001',
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public function headers(): array
+    {
+        return [
+            'Idempotency-Key' => [
+                'description' => 'Required unique request key used to prevent duplicate order creation.',
+                'example' => 'checkout-user-42-20260212-001',
+            ],
+        ];
+    }
+
     public function messages(): array
     {
         return [

@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Category;
+use App\Models\Product;
+use App\Observers\CategoryObserver;
+use App\Observers\ProductObserver;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -22,6 +26,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Category::observe(CategoryObserver::class);
+        Product::observe(ProductObserver::class);
+
         RateLimiter::for('checkout', function (Request $request) {
             $user = $request->user();
             $key = $user ? 'checkout:'.$user->id : 'checkout:'.$request->ip();

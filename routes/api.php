@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\HealthCheckController;
 use App\Http\Controllers\Api\V1\AddressController;
 use App\Http\Controllers\Api\V1\CartController;
+use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CheckoutController;
 use App\Http\Controllers\Api\V1\OrderTrackingController;
 use App\Http\Controllers\Api\V1\PaystackController;
@@ -12,6 +14,10 @@ use App\Http\Controllers\Api\V1\WebhookController;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/health/live', [HealthCheckController::class, 'live']);
+Route::get('/health/ready', [HealthCheckController::class, 'ready']);
+Route::get('/health', [HealthCheckController::class, 'ready']);
 
 Route::get('/', function () {
     return response()->json([
@@ -29,6 +35,11 @@ Route::post('/login', [LoginController::class, 'login']);
 |--------------------------------------------------------------------------
 */
 Route::prefix('v1')->group(function () {
+    Route::apiResource('categories', CategoryController::class)
+        ->only(['index', 'show']);
+
+    Route::get('products/featured', [ProductController::class, 'featured']);
+
     Route::apiResource('products', ProductController::class)
         ->only(['index', 'show']);
 });
@@ -70,6 +81,9 @@ Route::middleware('auth:sanctum')->group(function () {
         });
 
         Route::middleware('role:admin|staff')->group(function () {
+            Route::apiResource('categories', CategoryController::class)
+                ->only(['store', 'update', 'destroy']);
+
             Route::apiResource('products', ProductController::class)
                 ->only(['store', 'update', 'destroy']);
         });

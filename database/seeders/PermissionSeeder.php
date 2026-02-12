@@ -55,6 +55,7 @@ class PermissionSeeder extends Seeder
                 'products.view',
                 'products.create',
                 'products.update',
+                'categories.manage',
                 'orders.view',
                 'orders.update',
                 'shipments.manage',

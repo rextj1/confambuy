@@ -18,6 +18,13 @@ use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @group Cart
+ *
+ * Manage the authenticated customer's cart.
+ *
+ * @authenticated
+ */
 class CartController extends Controller
 {
     public function __construct()

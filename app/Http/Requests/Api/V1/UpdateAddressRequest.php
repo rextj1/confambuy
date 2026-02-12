@@ -36,6 +36,59 @@ class UpdateAddressRequest extends FormRequest
         ];
     }
 
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public function bodyParameters(): array
+    {
+        return [
+            'name' => [
+                'description' => 'Updated recipient full name.',
+                'example' => 'John Doe',
+            ],
+            'email' => [
+                'description' => 'Updated recipient email address.',
+                'example' => 'john@example.com',
+            ],
+            'line_1' => [
+                'description' => 'Updated primary street address line.',
+                'example' => '24 Bourdillon Road',
+            ],
+            'line_2' => [
+                'description' => 'Updated secondary address details.',
+                'example' => 'Ikoyi',
+            ],
+            'city' => [
+                'description' => 'Updated city.',
+                'example' => 'Lagos',
+            ],
+            'state' => [
+                'description' => 'Updated state or province.',
+                'example' => 'Lagos',
+            ],
+            'postal_code' => [
+                'description' => 'Updated postal or ZIP code.',
+                'example' => '101241',
+            ],
+            'country' => [
+                'description' => 'Updated country name or code.',
+                'example' => 'Nigeria',
+            ],
+            'phone' => [
+                'description' => 'Updated recipient phone number.',
+                'example' => '+2348098765432',
+            ],
+            'default_shipping' => [
+                'description' => 'Mark as the default shipping address.',
+                'example' => false,
+            ],
+            'default_billing' => [
+                'description' => 'Mark as the default billing address.',
+                'example' => true,
+            ],
+        ];
+    }
+
     public function messages(): array
     {
         return [

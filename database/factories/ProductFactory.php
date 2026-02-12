@@ -12,7 +12,19 @@ class ProductFactory extends Factory
     {
         return $this->afterCreating(function ($product): void {
             if ($product->categories()->count() === 0) {
-                $product->categories()->attach(Category::factory()->create()->id);
+                $fallbackCategory = Category::query()->updateOrCreate(
+                    ['slug' => 'general'],
+                    [
+                        'name' => 'General',
+                        'description' => 'Fallback category',
+                        'is_active' => true,
+                        'sort_order' => 0,
+                        'parent_id' => null,
+                    ]
+                );
+
+                $fallbackCategoryId = $fallbackCategory->id;
+                $product->categories()->syncWithoutDetaching([$fallbackCategoryId]);
             }
         });
     }

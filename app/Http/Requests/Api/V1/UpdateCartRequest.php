@@ -28,4 +28,29 @@ class UpdateCartRequest extends FormRequest
             'shipping_method' => ['nullable', 'string', 'max:50'],
         ];
     }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public function bodyParameters(): array
+    {
+        return [
+            'coupon_code' => [
+                'description' => 'Coupon code to apply or replace.',
+                'example' => 'SAVE15',
+            ],
+            'shipping_address_id' => [
+                'description' => 'Shipping address ID for this cart.',
+                'example' => 4,
+            ],
+            'billing_address_id' => [
+                'description' => 'Billing address ID for this cart.',
+                'example' => 5,
+            ],
+            'shipping_method' => [
+                'description' => 'Selected shipping method.',
+                'example' => 'express',
+            ],
+        ];
+    }
 }

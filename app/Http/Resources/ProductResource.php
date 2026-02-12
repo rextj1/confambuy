@@ -15,7 +15,8 @@ class ProductResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $category = $this->categories->first();
+        $categories = $this->relationLoaded('categories') ? $this->categories : collect();
+        $category = $categories->first();
         $pricing = app(CalculateSellingPrice::class)->forProduct($this->resource);
 
         return [
@@ -69,6 +70,13 @@ class ProductResource extends JsonResource
                     ];
                 })->values();
             }),
+            'categories' => $categories->map(function ($item): array {
+                return [
+                    'id' => $item->id,
+                    'name' => $item->name,
+                    'slug' => $item->slug,
+                ];
+            })->values(),
             'category' => $category ? [
                 'id' => $category->id,
                 'name' => $category->name,
