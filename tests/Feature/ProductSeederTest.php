@@ -14,6 +14,12 @@ class ProductSeederTest extends TestCase
 
     public function test_products_are_seeded_correctly()
     {
+        config()->set('seeding.product.categories_limit', null);
+        config()->set('seeding.product.products_per_category', 6);
+        config()->set('seeding.product.generate_media', true);
+        config()->set('seeding.product.min_skus_per_product', 1);
+        config()->set('seeding.product.max_skus_per_product', 3);
+
         // Arrange: Create a category to ensure the seeder has something to work with
         $category = Category::factory()->create();
 
@@ -29,7 +35,7 @@ class ProductSeederTest extends TestCase
             $this->assertNotEmpty($product->skus, "Product {$product->id} should have SKUs.");
 
             // Verify Images exist (Seeder creates 3 images per product)
-            $this->assertCount(3, $product->images, "Product {$product->id} should have 3 images.");
+            $this->assertCount(3, $product->getMedia('images'), "Product {$product->id} should have 3 images.");
 
             // Verify Inventory exists for each SKU
             foreach ($product->skus as $sku) {

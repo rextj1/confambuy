@@ -14,6 +14,12 @@ return [
     |
     */
 
+    'mailgun' => [
+        'domain' => env('MAILGUN_DOMAIN'),
+        'secret' => env('MAILGUN_SECRET'),
+        'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
+    ],
+
     'postmark' => [
         'key' => env('POSTMARK_API_KEY'),
     ],
@@ -33,6 +39,12 @@ return [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
+    ],
+
+    'paystack' => [
+        'secret_key' => env('PAYSTACK_SECRET_KEY'),
+        'public_key' => env('PAYSTACK_PUBLIC_KEY'),
+        'base_url' => env('PAYSTACK_BASE_URL', 'https://api.paystack.co'),
     ],
 
 ];

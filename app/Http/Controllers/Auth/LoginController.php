@@ -3,38 +3,54 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse; // Added this import
 
+/**
+ * @group Authentication
+ *
+ * Login and logout endpoints for cookie-based authentication.
+ */
 class LoginController extends Controller
 {
-    public function login(Request $request): JsonResponse
+    /**
+     * Login.
+     *
+     * Start an authenticated session for the current user.
+     *
+     * @unauthenticated
+     */
+    public function login(LoginRequest $request): JsonResponse
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+        $credentials = $request->validated();
 
-        if (!auth()->attempt($credentials)) {
+        if (! auth()->attempt($credentials)) {
             return response()->json([
-                'message' => 'Invalid credentials'
+                'message' => 'Invalid credentials',
             ], 401);
         }
 
-       session()->regenerate();
+        session()->regenerate();
 
         return response()->json([
             'message' => 'Logged in successfully',
-            'user' => auth()->user(), 
+            'user' => auth()->user(),
         ]);
     }
 
+    /**
+     * Logout.
+     *
+     * End the authenticated session for the current user.
+     *
+     * @authenticated
+     */
     public function logout(Request $request): JsonResponse
     {
-        // Explicitly using the web guard for cookie logout
         auth()->guard('web')->logout();
 
-      session()->invalidate();
+        session()->invalidate();
         session()->regenerateToken();
 
         return response()->json(['message' => 'Logged out']);

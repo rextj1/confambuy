@@ -24,6 +24,7 @@ class Payment extends Model
         'method_details',
         'refunded_amount',
         'captured',
+        'idempotency_key',
     ];
 
     protected $casts = [

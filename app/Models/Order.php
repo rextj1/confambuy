@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Notifications\OrderStatusUpdated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 
 class Order extends Model
 {
@@ -14,7 +17,9 @@ class Order extends Model
 
     protected $fillable = [
         'user_id',
+        'uuid',
         'order_number',
+        'idempotency_key',
         'status', // pending, processing, completed, cancelled, declined
         'subtotal',
         'shipping_total',
@@ -116,6 +121,53 @@ class Order extends Model
         static::creating(function (self $order): void {
             if (empty($order->order_number)) {
                 $order->order_number = static::generateOrderNumber();
+            }
+
+            if (empty($order->uuid)) {
+                $order->uuid = (string) Str::uuid();
+            }
+        });
+
+        static::updated(function (self $order): void {
+            $statusChanged = $order->wasChanged('status')
+                || $order->wasChanged('shipped_at')
+                || $order->wasChanged('delivered_at')
+                || $order->wasChanged('cancelled_at');
+
+            if (! $statusChanged) {
+                return;
+            }
+
+            $status = $order->status;
+
+            if ($order->wasChanged('shipped_at')) {
+                $status = 'shipped';
+            }
+
+            if ($order->wasChanged('delivered_at')) {
+                $status = 'delivered';
+            }
+
+            if ($order->wasChanged('cancelled_at')) {
+                $status = 'cancelled';
+            }
+
+            $notification = new OrderStatusUpdated($order, $status);
+
+            if ($order->user) {
+                $order->user->notify($notification);
+            }
+
+            $guard = config('permission.defaults.guard', 'web');
+
+            foreach (['admin', 'staff'] as $roleName) {
+                if (! Role::query()->where('name', $roleName)->where('guard_name', $guard)->exists()) {
+                    continue;
+                }
+
+                User::role($roleName)->get()->each(function (User $recipient) use ($notification): void {
+                    $recipient->notify($notification);
+                });
             }
         });
     }

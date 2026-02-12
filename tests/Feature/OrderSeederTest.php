@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Address;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\ProductSku;
 use App\Models\User;
 use Database\Seeders\OrderSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -32,7 +33,11 @@ class OrderSeederTest extends TestCase
             'default_billing' => true,
         ]);
 
-        Product::factory()->count(3)->create();
+        $products = Product::factory()->count(3)->create();
+
+        $products->each(function (Product $product): void {
+            ProductSku::factory()->create(['product_id' => $product->id]);
+        });
 
         // Act: Run the seeder
         $this->seed(OrderSeeder::class);
@@ -47,9 +52,14 @@ class OrderSeederTest extends TestCase
 
             // Verify Order Items
             $this->assertNotEmpty($order->items, "Order {$order->id} has no items.");
+            $expectedTotal = (float) $order->items->sum('total')
+                - (float) $order->discount_total
+                + (float) $order->tax_total
+                + (float) $order->shipping_total;
+
             $this->assertEqualsWithDelta(
+                $expectedTotal,
                 (float) $order->grand_total,
-                (float) $order->items->sum('total'),
                 0.01,
                 "Order {$order->id} total mismatch."
             );

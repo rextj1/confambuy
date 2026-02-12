@@ -27,6 +27,7 @@ class PermissionSeeder extends Seeder
         // Core permissions (scoped by domain)
         $perms = [
             'products.create', 'products.view', 'products.update', 'products.delete',
+            'addresses.view', 'addresses.create', 'addresses.update', 'addresses.delete',
             'categories.manage',
             'orders.create', 'orders.view', 'orders.update', 'orders.cancel',
             'shipments.manage',
@@ -54,6 +55,7 @@ class PermissionSeeder extends Seeder
                 'products.view',
                 'products.create',
                 'products.update',
+                'categories.manage',
                 'orders.view',
                 'orders.update',
                 'shipments.manage',
@@ -68,6 +70,10 @@ class PermissionSeeder extends Seeder
         if ($customer) {
             $customer->syncPermissions([
                 'products.view',
+                'addresses.view',
+                'addresses.create',
+                'addresses.update',
+                'addresses.delete',
                 'orders.create',
                 'orders.view',
                 'orders.cancel',
