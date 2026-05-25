@@ -1,0 +1,630 @@
+name: Products
+description: |-
+
+  Browse and manage products.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/v1/products/featured
+    metadata:
+      custom: []
+      groupName: Products
+      groupDescription: |-
+
+        Browse and manage products.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List featured products.'
+      description: 'Return a paginated list of active featured products.'
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"data":[],"links":{"first":"https:\/\/confambuy.test\/api\/v1\/products\/featured?page=1","last":"https:\/\/confambuy.test\/api\/v1\/products\/featured?page=1","prev":null,"next":null},"meta":{"current_page":1,"from":null,"last_page":1,"links":[{"url":null,"label":"&laquo; Previous","page":null,"active":false},{"url":"https:\/\/confambuy.test\/api\/v1\/products\/featured?page=1","label":"1","page":1,"active":true},{"url":null,"label":"Next &raquo;","page":null,"active":false}],"path":"https:\/\/confambuy.test\/api\/v1\/products\/featured","per_page":15,"to":null,"total":0}}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/v1/products
+    metadata:
+      custom: []
+      groupName: Products
+      groupDescription: |-
+
+        Browse and manage products.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List products.'
+      description: 'Returns a paginated list with filtering, sorting, and include options.'
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"data":[],"links":{"first":"https:\/\/confambuy.test\/api\/v1\/products?page=1","last":"https:\/\/confambuy.test\/api\/v1\/products?page=1","prev":null,"next":null},"meta":{"current_page":1,"from":null,"last_page":1,"links":[{"url":null,"label":"&laquo; Previous","page":null,"active":false},{"url":"https:\/\/confambuy.test\/api\/v1\/products?page=1","label":"1","page":1,"active":true},{"url":null,"label":"Next &raquo;","page":null,"active":false}],"path":"https:\/\/confambuy.test\/api\/v1\/products","per_page":15,"to":null,"total":0}}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/v1/products/{id}'
+    metadata:
+      custom: []
+      groupName: Products
+      groupDescription: |-
+
+        Browse and manage products.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get a product.'
+      description: 'Fetch a single product with related media and categories.'
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the product.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 16
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 404
+        content: |-
+          {
+              "message": "No query results for model [App\\Models\\Product] 16"
+          }
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/v1/products
+    metadata:
+      custom: []
+      groupName: Products
+      groupDescription: |-
+
+        Browse and manage products.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create a product.'
+      description: 'Create a new product record.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      category_id:
+        custom: []
+        name: category_id
+        description: 'Single category ID for this product. Use either category_id or category_ids. The <code>id</code> of an existing record in the categories table.'
+        required: false
+        example: 3
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      category_ids:
+        custom: []
+        name: category_ids
+        description: 'The <code>id</code> of an existing record in the categories table.'
+        required: false
+        example:
+          - 16
+        type: 'integer[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      name:
+        custom: []
+        name: name
+        description: 'Product name. Must not be greater than 255 characters.'
+        required: true
+        example: 'Wireless Mouse'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      slug:
+        custom: []
+        name: slug
+        description: 'Custom product slug. Auto-generated if omitted. Must not be greater than 255 characters.'
+        required: false
+        example: wireless-mouse
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      sku:
+        custom: []
+        name: sku
+        description: 'Unique stock keeping unit code. Must not be greater than 255 characters.'
+        required: false
+        example: WM-001
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      description:
+        custom: []
+        name: description
+        description: 'Product description.'
+        required: false
+        example: 'Ergonomic 2.4GHz wireless mouse with silent clicks.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      price:
+        custom: []
+        name: price
+        description: 'Base product price. Must be at least 0.'
+        required: true
+        example: 15999.99
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      compare_at_price:
+        custom: []
+        name: compare_at_price
+        description: 'Original price before discount. Must be at least 0.'
+        required: false
+        example: 19999.99
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      featured:
+        custom: []
+        name: featured
+        description: 'Whether to mark the product as featured.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      taxable:
+        custom: []
+        name: taxable
+        description: 'Whether tax should be applied.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      published_at:
+        custom: []
+        name: published_at
+        description: 'Publish date/time. Must be a valid date.'
+        required: false
+        example: '2026-02-12 10:00:00'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      metadata:
+        custom: []
+        name: metadata
+        description: 'Additional product metadata.'
+        required: false
+        example:
+          brand: Logitech
+          color: black
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      is_active:
+        custom: []
+        name: is_active
+        description: 'Whether the product is active.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      stock_quantity:
+        custom: []
+        name: stock_quantity
+        description: 'Optional stock quantity field (if used by your flow). Must be at least 0.'
+        required: false
+        example: 100
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      category_id: 3
+      category_ids:
+        - 16
+      name: 'Wireless Mouse'
+      slug: wireless-mouse
+      sku: WM-001
+      description: 'Ergonomic 2.4GHz wireless mouse with silent clicks.'
+      price: 15999.99
+      compare_at_price: 19999.99
+      featured: true
+      taxable: true
+      published_at: '2026-02-12 10:00:00'
+      metadata:
+        brand: Logitech
+        color: black
+      is_active: true
+      stock_quantity: 100
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'api/v1/products/{id}'
+    metadata:
+      custom: []
+      groupName: Products
+      groupDescription: |-
+
+        Browse and manage products.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update a product.'
+      description: 'Update an existing product.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the product.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 16
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      category_id:
+        custom: []
+        name: category_id
+        description: 'Single category ID for this product. Use either category_id or category_ids. The <code>id</code> of an existing record in the categories table.'
+        required: false
+        example: 3
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      category_ids:
+        custom: []
+        name: category_ids
+        description: 'The <code>id</code> of an existing record in the categories table.'
+        required: false
+        example:
+          - 16
+        type: 'integer[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      name:
+        custom: []
+        name: name
+        description: 'Updated product name. Must not be greater than 255 characters.'
+        required: false
+        example: 'Wireless Mouse Pro'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      slug:
+        custom: []
+        name: slug
+        description: 'Updated product slug. Must not be greater than 255 characters.'
+        required: false
+        example: wireless-mouse-pro
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      sku:
+        custom: []
+        name: sku
+        description: 'Updated SKU code. Must not be greater than 255 characters.'
+        required: false
+        example: WM-001-PRO
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      description:
+        custom: []
+        name: description
+        description: 'Updated product description.'
+        required: false
+        example: 'Updated ergonomic wireless mouse with USB-C charging.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      price:
+        custom: []
+        name: price
+        description: 'Updated base price. Must be at least 0.'
+        required: false
+        example: 17999.99
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      compare_at_price:
+        custom: []
+        name: compare_at_price
+        description: 'Updated original price before discount. Must be at least 0.'
+        required: false
+        example: 21999.99
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      featured:
+        custom: []
+        name: featured
+        description: 'Whether to mark as featured.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      taxable:
+        custom: []
+        name: taxable
+        description: 'Whether tax should be applied.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      published_at:
+        custom: []
+        name: published_at
+        description: 'Updated publish date/time. Must be a valid date.'
+        required: false
+        example: '2026-02-14 08:00:00'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      metadata:
+        custom: []
+        name: metadata
+        description: 'Updated metadata values.'
+        required: false
+        example:
+          brand: Logitech
+          edition: pro
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      is_active:
+        custom: []
+        name: is_active
+        description: 'Whether the product is active.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      stock_quantity:
+        custom: []
+        name: stock_quantity
+        description: 'Optional stock quantity field (if used by your flow). Must be at least 0.'
+        required: false
+        example: 120
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      category_id: 3
+      category_ids:
+        - 16
+      name: 'Wireless Mouse Pro'
+      slug: wireless-mouse-pro
+      sku: WM-001-PRO
+      description: 'Updated ergonomic wireless mouse with USB-C charging.'
+      price: 17999.99
+      compare_at_price: 21999.99
+      featured: true
+      taxable: true
+      published_at: '2026-02-14 08:00:00'
+      metadata:
+        brand: Logitech
+        edition: pro
+      is_active: true
+      stock_quantity: 120
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: 'api/v1/products/{id}'
+    metadata:
+      custom: []
+      groupName: Products
+      groupDescription: |-
+
+        Browse and manage products.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete a product.'
+      description: 'Soft delete a product.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the product.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 16
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

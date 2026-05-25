@@ -1,0 +1,38 @@
+name: Webhooks
+description: |-
+
+  Public payment webhook ingestion endpoint.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/v1/payments/webhook
+    metadata:
+      custom: []
+      groupName: Webhooks
+      groupDescription: |-
+
+        Public payment webhook ingestion endpoint.
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null

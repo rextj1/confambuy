@@ -1,0 +1,8 @@
+<?php
+
+return [
+    'name' => env('SUPER_ADMIN_NAME'),
+    'email' => env('SUPER_ADMIN_EMAIL'),
+    'password' => env('SUPER_ADMIN_PASSWORD'),
+    'store_name' => env('SUPER_ADMIN_STORE_NAME'),
+];

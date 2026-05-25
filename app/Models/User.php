@@ -50,6 +50,20 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
+     * Get the vendor for the user.
+     */
+
+    public function vendor()
+    {
+        return $this->hasOne(Vendor::class);
+    }
+
+    public function isOwner(): bool
+    {
+        return $this->hasRole('super_admin');
+    }
+
+    /**
      * Get the orders for the user.
      */
     public function orders(): HasMany

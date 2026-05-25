@@ -4,54 +4,110 @@ namespace Database\Seeders;
 
 use App\Models\Address;
 use App\Models\User;
+use App\Models\Vendor;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Str;
 
 class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        // Ensure admin seed is idempotent across repeated runs.
-        $adminUser = User::updateOrCreate(
-            ['email' => 'admin@confambuy.com'],
+        /*
+        |--------------------------------------------------------------------------
+        | ROLES
+        |--------------------------------------------------------------------------
+        */
+        $superAdminRole = Role::where('name', 'super_admin')->first();
+        $adminRole = Role::where('name', 'admin')->first();
+        $customerRole = Role::where('name', 'customer')->first();
+
+        /*
+        |--------------------------------------------------------------------------
+        | SUPER ADMIN (OWNER)
+        |--------------------------------------------------------------------------
+        */
+
+        $owner = User::firstOrCreate(
             [
-                'name' => 'Admin User',
-                'password' => Hash::make('password'),
-                'phone' => '1234567890',
+                'email' => config('super_admin.email'),
+            ],
+            [
+                'name' => config('super_admin.name'),
+                'password' => Hash::make(config('super_admin.password')),
+                'phone' => 12345678912,
+                'is_active' => true,
+                'email_verified_at' => now(),
+            ]
+        );
+
+        if ($superAdminRole) {
+            $owner->syncRoles([$superAdminRole->name]);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | CREATE SINGLE VENDOR (LINKED TO OWNER)
+        |--------------------------------------------------------------------------
+        */
+
+        Vendor::firstOrCreate(
+            [
+                'user_id' => $owner->id,
+            ],
+            [
+                'name' => config('super_admin.store_name', 'My Store'),
+                'slug' => Str::slug(config('super_admin.store_name', 'My Store')),
+                'contact_email' => config('super_admin.email'),
+                'phone_number' => 12345678912,
                 'is_active' => true,
             ]
         );
 
-        // Create deterministic customer records so reruns are safe.
-        for ($index = 1; $index <= 20; $index++) {
-            $email = sprintf('customer%02d@confambuy.com', $index);
-            $customer = User::query()->updateOrCreate(
-                ['email' => $email],
-                [
-                    'name' => "Customer {$index}",
-                    'password' => Hash::make('password'),
-                    'phone' => sprintf('0800000%04d', $index),
-                    'is_active' => true,
-                ]
-            );
 
-            Address::query()->updateOrCreate(
-                [
-                    'user_id' => $customer->id,
-                    'default_shipping' => true,
-                    'default_billing' => true,
-                ],
-                [
-                    'name' => $customer->name,
-                    'email' => $customer->email,
-                    'line_1' => "{$index} Example Street",
-                    'city' => 'Lagos',
-                    'state' => 'Lagos',
-                    'postal_code' => sprintf('10%04d', $index),
-                    'country' => 'Nigeria',
-                    'phone' => $customer->phone ?? sprintf('0800000%04d', $index),
-                ]
-            );
+        /*
+        |--------------------------------------------------------------------------
+        | ADMIN USER (STORE MANAGER)
+        |--------------------------------------------------------------------------
+        */
+
+        $admin = User::firstOrCreate(
+            [
+                'email' => config('admin.email', 'admin@confambuy.com'),
+            ],
+            [
+                'name' => config('admin.name', 'Admin User'),
+                'password' => Hash::make(config('admin.password', 'password')),
+                'phone' => 12345678923,
+                'is_active' => true,
+                'email_verified_at' => now(),
+            ]
+        );
+
+        if ($adminRole) {
+            $admin->syncRoles([$adminRole->name]);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | CUSTOMERS
+        |--------------------------------------------------------------------------
+        */
+
+        $users = User::factory(20)->create();
+
+        foreach ($users as $user) {
+            if ($customerRole) {
+                $user->assignRole($customerRole->name);
+            }
+
+            Address::factory()->create([
+                'user_id' => $user->id,
+                'name' => $user->name,
+                'default_shipping' => true,
+                'default_billing' => true,
+            ]);
         }
     }
 }

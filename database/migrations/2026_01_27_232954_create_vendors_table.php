@@ -23,7 +23,7 @@ return new class extends Migration
             $table->text('address')->nullable();
             $table->string('cac_number')->nullable();
             $table->json('bank_info')->nullable(); // {bank: 'GTB', account: '0123...', name: '...'}
-            $table->decimal('commission_rate', 5, 2)->default(10.00); // e.g., 10% commission
+            // $table->decimal('commission_rate', 5, 2)->default(10.00); // e.g., 10% commission
             $table->string('bank_details')->nullable(); // For payouts
             $table->string('status')->default('pending'); // pending, active, suspended
             $table->boolean('is_active')->default(true)->index();

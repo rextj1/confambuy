@@ -1,0 +1,116 @@
+name: Pricing
+description: |-
+
+  Calculate cart pricing quotes before checkout.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/v1/pricing/quote
+    metadata:
+      custom: []
+      groupName: Pricing
+      groupDescription: |-
+
+        Calculate cart pricing quotes before checkout.
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      items:
+        custom: []
+        name: items
+        description: 'List of line items to price. Must have at least 1 items.'
+        required: true
+        example:
+          - []
+        type: 'object[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      coupon_code:
+        custom: []
+        name: coupon_code
+        description: 'Coupon code to apply. Must not be greater than 255 characters.'
+        required: false
+        example: WELCOME10
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      shipping_address_id:
+        custom: []
+        name: shipping_address_id
+        description: 'Shipping address ID to use for shipping/tax estimation. The <code>id</code> of an existing record in the addresses table.'
+        required: false
+        example: 4
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      shipping_method:
+        custom: []
+        name: shipping_method
+        description: 'Selected shipping method. Must not be greater than 50 characters.'
+        required: false
+        example: standard
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      'items[].sku_id':
+        custom: []
+        name: 'items[].sku_id'
+        description: 'Product SKU ID. The <code>id</code> of an existing record in the product_skus table.'
+        required: true
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'items[].quantity':
+        custom: []
+        name: 'items[].quantity'
+        description: 'Requested quantity for the SKU. Must be at least 1. Must not be greater than 1000.'
+        required: true
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      items:
+        -
+          sku_id: 10
+          quantity: 2
+      coupon_code: WELCOME10
+      shipping_address_id: 4
+      shipping_method: standard
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

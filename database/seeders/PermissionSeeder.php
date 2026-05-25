@@ -17,17 +17,32 @@ class PermissionSeeder extends Seeder
 
         $guard = config('permission.defaults.guard', 'web');
 
-        // Core roles
-        $roles = ['admin', 'staff', 'customer'];
+        /*
+        |--------------------------------------------------------------------------
+        | ROLES
+        |--------------------------------------------------------------------------
+        */
+        $roles = [
+            'super_admin',
+            'admin',
+            'staff',
+            'customer',
+        ];
 
         foreach ($roles as $role) {
-            Role::firstOrCreate(['name' => $role, 'guard_name' => $guard]);
+            Role::firstOrCreate([
+                'name' => $role,
+                'guard_name' => $guard,
+            ]);
         }
 
-        // Core permissions (scoped by domain)
+        /*
+        |--------------------------------------------------------------------------
+        | PERMISSIONS
+        |--------------------------------------------------------------------------
+        */
         $perms = [
             'products.create', 'products.view', 'products.update', 'products.delete',
-            'addresses.view', 'addresses.create', 'addresses.update', 'addresses.delete',
             'categories.manage',
             'orders.create', 'orders.view', 'orders.update', 'orders.cancel',
             'shipments.manage',
@@ -40,83 +55,66 @@ class PermissionSeeder extends Seeder
         ];
 
         foreach ($perms as $perm) {
-            Permission::firstOrCreate(['name' => $perm, 'guard_name' => $guard]);
+            Permission::firstOrCreate([
+                'name' => $perm,
+                'guard_name' => $guard,
+            ]);
         }
 
-        // Attach some defaults
-        $admin = Role::where('name', 'admin')->where('guard_name', $guard)->first();
+        /*
+        |--------------------------------------------------------------------------
+        | ROLE PERMISSION ASSIGNMENTS
+        |--------------------------------------------------------------------------
+        */
+
+        $superAdmin = Role::where('name', 'super_admin')->first();
+        $admin = Role::where('name', 'admin')->first();
+        $staff = Role::where('name', 'staff')->first();
+        $customer = Role::where('name', 'customer')->first();
+
+        if ($superAdmin) {
+            $superAdmin->syncPermissions(Permission::all());
+        }
+
         if ($admin) {
-            $admin->syncPermissions(Permission::where('guard_name', $guard)->get());
-        }
-
-        $staff = Role::where('name', 'staff')->where('guard_name', $guard)->first();
-        if ($staff) {
-            $staff->syncPermissions([
-                'products.view',
+            $admin->syncPermissions([
                 'products.create',
+                'products.view',
                 'products.update',
+                'products.delete',
                 'categories.manage',
                 'orders.view',
                 'orders.update',
                 'shipments.manage',
                 'inventory.manage',
                 'coupons.manage',
+                'users.view',
+                'reports.view',
+                'reviews.moderate',
+            ]);
+        }
+
+        if ($staff) {
+            $staff->syncPermissions([
+                'products.view',
+                'products.create',
+                'products.update',
+                'orders.view',
+                'orders.update',
+                'inventory.manage',
+                'shipments.manage',
                 'reviews.moderate',
                 'reports.view',
             ]);
         }
 
-        $customer = Role::where('name', 'customer')->where('guard_name', $guard)->first();
         if ($customer) {
             $customer->syncPermissions([
                 'products.view',
-                'addresses.view',
-                'addresses.create',
-                'addresses.update',
-                'addresses.delete',
                 'orders.create',
                 'orders.view',
                 'orders.cancel',
             ]);
-        }
-
-        $defaultPassword = Hash::make('password');
-
-        $adminUser = User::updateOrCreate(
-            ['email' => 'admin@confambuy.com'],
-            [
-                'name' => 'Admin User',
-                'password' => $defaultPassword,
-                'email_verified_at' => now(),
-                'is_active' => true,
-            ]
-        );
-
-        $staffUser = User::updateOrCreate(
-            ['email' => 'tojurex@gmail.com'],
-            [
-                'name' => 'Rex',
-                'password' => $defaultPassword,
-                'email_verified_at' => now(),
-                'is_active' => true,
-            ]
-        );
-
-        if ($adminUser && $admin) {
-            $adminUser->syncRoles([$admin->name]);
-        }
-
-        if ($staffUser && $staff) {
-            $staffUser->syncRoles([$staff->name]);
-        }
-
-        if ($customer) {
-            User::whereDoesntHave('roles')
-                ->whereNotIn('email', ['admin@confambuy.com', 'tojurex@gmail.com'])
-                ->get()
-                ->each(function (User $user) use ($customer): void {
-                    $user->assignRole($customer->name);
-                });
         }
     }
 }
