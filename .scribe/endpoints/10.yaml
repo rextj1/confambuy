@@ -1,0 +1,102 @@
+name: Checkout
+description: |-
+
+  Convert an active cart into an order.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/v1/checkout
+    metadata:
+      custom: []
+      groupName: Checkout
+      groupDescription: |-
+
+        Convert an active cart into an order.
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      shipping_address_id:
+        custom: []
+        name: shipping_address_id
+        description: 'Shipping address ID. The <code>id</code> of an existing record in the addresses table.'
+        required: true
+        example: 4
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      billing_address_id:
+        custom: []
+        name: billing_address_id
+        description: 'Billing address ID. The <code>id</code> of an existing record in the addresses table.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      shipping_method:
+        custom: []
+        name: shipping_method
+        description: 'Shipping method code. Must not be greater than 50 characters.'
+        required: true
+        example: standard
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      payment_method:
+        custom: []
+        name: payment_method
+        description: 'Payment method code. Must not be greater than 50 characters.'
+        required: true
+        example: paystack
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      idempotency_key:
+        custom: []
+        name: idempotency_key
+        description: 'Unique key for safe retries. This is read from the Idempotency-Key header. Must not be greater than 255 characters.'
+        required: true
+        example: checkout-user-42-20260212-001
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      shipping_address_id: 4
+      billing_address_id: 5
+      shipping_method: standard
+      payment_method: paystack
+      idempotency_key: checkout-user-42-20260212-001
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
