@@ -2,12 +2,15 @@
 
 namespace App\Providers;
 
+use App\Listeners\AssignRoleAfterEmailVerified;
 use App\Models\Category;
 use App\Models\Product;
 use App\Observers\CategoryObserver;
 use App\Observers\ProductObserver;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
@@ -26,6 +29,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Event::listen(Verified::class, AssignRoleAfterEmailVerified::class);
+
         Category::observe(CategoryObserver::class);
         Product::observe(ProductObserver::class);
 
