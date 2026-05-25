@@ -41,10 +41,10 @@ class AdminUserSeeder extends Seeder
 
         // 4. Create the Admin User
         $adminUser = User::updateOrCreate(
-            ['email' => 'tojurex@gmail.com'],
+            ['email' => 'admin@confambuy.com'],
             [
                 'name' => 'Toju Rex',
-                'password' => Hash::make('destiny12'),
+                'password' => Hash::make('password'),
                 'email_verified_at' => now(),
             ]
         );

@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -14,6 +17,29 @@ use Illuminate\Http\Request;
  */
 class LoginController extends Controller
 {
+    /**
+     * Register.
+     *
+     * Create a new user and send email verification notification.
+     *
+     * @unauthenticated
+     */
+    public function register(RegisterRequest $request): JsonResponse
+    {
+        $user = User::query()->create($request->validated());
+
+        event(new Registered($user));
+
+        auth()->guard('web')->login($user);
+        session()->regenerate();
+
+        return response()->json([
+            'message' => 'Registered successfully',
+            'verification_email_sent' => true,
+            'user' => $user->load('roles'),
+        ], 201);
+    }
+
     /**
      * Login.
      *

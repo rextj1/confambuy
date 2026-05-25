@@ -9,8 +9,10 @@ use App\Http\Controllers\Api\V1\OrderTrackingController;
 use App\Http\Controllers\Api\V1\PaystackController;
 use App\Http\Controllers\Api\V1\PricingController;
 use App\Http\Controllers\Api\V1\ProductController;
+use App\Http\Controllers\Api\V1\StaffAllowController;
 use App\Http\Controllers\Api\V1\SupportTicketController;
 use App\Http\Controllers\Api\V1\WebhookController;
+use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -27,13 +29,20 @@ Route::get('/', function () {
     ]);
 });
 
-// Public routes
-Route::post('/login', [LoginController::class, 'login']);
+
+
 /*
 |--------------------------------------------------------------------------
 | Public Read-Only Resources (Guest OK)
 |--------------------------------------------------------------------------
 */
+
+Route::post('/register', [LoginController::class, 'register']);
+Route::post('/login', [LoginController::class, 'login']);
+Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
+    ->middleware(['signed', 'throttle:6,1'])
+    ->name('verification.verify');
+
 Route::prefix('v1')->group(function () {
     Route::apiResource('categories', CategoryController::class)
         ->only(['index', 'show']);
@@ -52,6 +61,9 @@ Route::prefix('v1')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/logout', [LoginController::class, 'logout']);
+    Route::post('/email/verification-notification', [EmailVerificationController::class, 'send'])
+        ->middleware('throttle:6,1')
+        ->name('verification.send');
 
     Route::get('/me', function (Request $request) {
         return $request->user();
@@ -86,6 +98,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
             Route::apiResource('products', ProductController::class)
                 ->only(['store', 'update', 'destroy']);
+        });
+
+        Route::middleware('role:admin')->prefix('admin')->group(function () {
+            Route::post('staff-allows', [StaffAllowController::class, 'store']);
+            Route::delete('staff-allows/{staffAllow}', [StaffAllowController::class, 'destroy']);
         });
     });
 });
